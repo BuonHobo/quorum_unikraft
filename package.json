@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.2.0",
+    "fs": "^0.0.1-security",
+    "quorum-genesis-tool": "^0.2.20",
+    "solc": "^0.8.19",
+    "web3": "^4.16.0"
+  }
+}
