@@ -18,8 +18,8 @@ contract IDS {
     mapping(string => bool) private state_parameters_exist;
 
     address[] agents = [
-        0xD601634f832ddEf5c9F69415fD954077BE0be02b,
-        0xaB00aE2024EA32e642512B331E82644e50Fe6A9B
+        0xd2D84f357E6D8E615fF1e47C919470A6346e680C,
+        0xbC6712dF6Ed199eCcF590b56f68811CD4cf22808
     ]; // [#AGENTS];
     uint256 agents4Params = 2; // #NUMAGENTS4PARAMS;
 
@@ -27,6 +27,7 @@ contract IDS {
 
     // Stato del contratto, memorizza tutti i parametri e i relativi stati
     mapping(string => Parameter_Status) public statusMapDT;
+    bool public used = false;
 
     event ActionRequired(address selectedAgent, string actionToApply);
 
@@ -70,7 +71,7 @@ contract IDS {
         uint256[] memory values
     ) external lengthCheck(parameters.length, values.length) {
         bool change = false;
-
+        used = true;
         for (uint256 i = 0; i < parameters.length; i++) {
             string memory parameter = parameters[i];
 

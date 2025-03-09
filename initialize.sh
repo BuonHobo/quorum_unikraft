@@ -12,13 +12,19 @@ rmdir artifacts/2*
 #Configure host IPs
 for i in $( seq 1 $NUM_NODES ); do
     ip="192.168.2.$i"
-    sed -i "0,/<HOST>/ s/<HOST>/${ip}/" artifacts/goQuorum/static-nodes.json
+    port="3030$i"
+    raftport="5300$i"
+    for file in artifacts/goQuorum/{static-nodes.json,permissioned-nodes.json}; do
+        sed -i "0,/<HOST>/ s/<HOST>/${ip}/" $file
+        sed -i "0,/:30303?/ s/30303/${port}/" $file
+        sed -i "0,/&raftport=53000/ s/53000/${raftport}/" $file
+    done
 done
 
 #Configure nodes
 for i in $( seq 1 $NUM_NODES ); do
     mkdir -p n$i/data/keystore
-    cp artifacts/goQuorum/static-nodes.json artifacts/goQuorum/genesis.json n$i/data/
+    cp artifacts/goQuorum/permissioned-nodes.json artifacts/goQuorum/static-nodes.json artifacts/goQuorum/genesis.json n$i/data/
     cp artifacts/validator$((i-1))/{nodekey*,address} n$i/data/
     cp artifacts/validator$((i-1))/account* n$i/data/keystore/
 done

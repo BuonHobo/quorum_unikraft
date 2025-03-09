@@ -5,11 +5,14 @@ WORKDIR /quorum
 # Dependencies
 RUN set -xe; \
     apk --no-cache add \
-      gcc \
-      linux-headers \
-      musl-dev \
-      tzdata \
-      wget \
+    gcc \
+    linux-headers \
+    musl-dev \
+    tzdata \
+    wget \
+    curl \
+    ca-certificates \
+    openssl \
     ; \
     update-ca-certificates;
 
@@ -22,13 +25,15 @@ RUN set -xe; \
 RUN set -xe; \
     CGO_ENABLED=1 \
     go build -v \
-      -buildmode=pie \
-      -ldflags "-linkmode external -extldflags '-static-pie'" \
-      -o /geth \
-      ./cmd/geth
+    -buildmode=pie \
+    -ldflags "-linkmode external -extldflags '-static-pie'" \
+    -tags netgo \
+    -o /geth \
+    ./cmd/geth
 
 FROM scratch
 
 COPY --from=build /usr/share/zoneinfo/Etc/UTC /usr/share/zoneinfo/Etc/UTC
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+
 COPY --from=build /geth /geth

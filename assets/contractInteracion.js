@@ -1,8 +1,8 @@
 const { Web3 } = require("web3");
-const { WebSocketProvider } = require("web3-providers-ws");
 const path = require("path");
 const fs = require("fs");
 
+const { WebSocketProvider } = require("web3-providers-ws");
 const ws_url = "ws://192.168.2.1:32000";
 
 async function main() {
