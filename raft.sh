@@ -1,5 +1,5 @@
 #!/bin/bash
-NUM_NODES=2
+NUM_NODES=3
 export NUM_NODES
 
 ./stop.sh
