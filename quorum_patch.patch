@@ -1,0 +1,53 @@
+diff --git a/p2p/enode/node.go b/p2p/enode/node.go
+index c557e68e7..6ed52c4d4 100644
+--- a/p2p/enode/node.go
++++ b/p2p/enode/node.go
+@@ -211,6 +211,10 @@ func (n *Node) ValidateComplete() error {
+ 
+ // String returns the text representation of the record.
+ func (n *Node) String() string {
++	// if n == nil {
++	// 	fmt.Println("BUONHOBO: dialDest was nil")
++	// 	return "nil"
++	// }
+ 	if isNewV4(n) {
+ 		return n.URLv4() // backwards-compatibility glue for NewV4 nodes
+ 	}
+diff --git a/p2p/server.go b/p2p/server.go
+index ea9128a29..355262b9d 100644
+--- a/p2p/server.go
++++ b/p2p/server.go
+@@ -988,14 +988,25 @@ func (srv *Server) setupConn(c *conn, flags connFlag, dialDest *enode.Node) erro
+ 	//START - QUORUM Permissioning
+ 	currentNode := srv.NodeInfo().ID
+ 	cnodeName := srv.NodeInfo().Name
+-	clog.Trace("Quorum permissioning",
+-		"EnableNodePermission", srv.EnableNodePermission,
+-		"DataDir", srv.DataDir,
+-		"Current Node ID", currentNode,
+-		"Node Name", cnodeName,
+-		"Dialed Dest", dialDest,
+-		"Connection ID", c.node.ID(),
+-		"Connection String", c.node.ID().String())
++
++	if dialDest != nil {
++		clog.Trace("Quorum permissioning",
++			"EnableNodePermission", srv.EnableNodePermission,
++			"DataDir", srv.DataDir,
++			"Current Node ID", currentNode,
++			"Node Name", cnodeName,
++			"Dialed Dest", dialDest,
++			"Connection ID", c.node.ID(),
++			"Connection String", c.node.ID().String())
++	} else {
++		clog.Trace("Quorum permissioning",
++			"EnableNodePermission", srv.EnableNodePermission,
++			"DataDir", srv.DataDir,
++			"Current Node ID", currentNode,
++			"Node Name", cnodeName,
++			"Connection ID", c.node.ID(),
++			"Connection String", c.node.ID().String())
++	}
+ 
+ 	if srv.EnableNodePermission {
+ 		clog.Trace("Node Permissioning is Enabled.")
