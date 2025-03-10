@@ -21,7 +21,7 @@ contract IDS {
         0xd2D84f357E6D8E615fF1e47C919470A6346e680C,
         0xbC6712dF6Ed199eCcF590b56f68811CD4cf22808
     ]; // [#AGENTS];
-    uint256 agents4Params = 2; // #NUMAGENTS4PARAMS;
+    uint256 agents4Params = 1; // #NUMAGENTS4PARAMS;
 
     mapping(bytes32 => string) private stateAction;
 
