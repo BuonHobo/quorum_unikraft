@@ -1,6 +1,10 @@
-raft
 .unikraft
-irs-blockchain
-node_modules
-package-lock.json
 .ropeproject
+.vscode
+venv*
+package-lock.json
+node_modules
+raft
+irs-blockchain
+deployment.json
+events.txt
