@@ -1,6 +1,6 @@
 FROM golang:1.21.4-alpine3.18 AS build
 
-COPY quorum_patch.patch /quorum/quorum.patch
+COPY ./quorum_patch.patch /quorum/quorum.patch
 
 WORKDIR /quorum
 

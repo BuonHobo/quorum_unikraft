@@ -2,9 +2,9 @@
 NUM_NODES=3
 export NUM_NODES
 
-./stop.sh
-./initialize.sh
-./start.sh
+./scripts/stop.sh
+./scripts/initialize.sh
+./scripts/start.sh
 
 sleep 5
 
