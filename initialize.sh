@@ -5,7 +5,11 @@ mkdir raft
 cd raft
 
 #Initialize raft network
-toolbox run --container ubuntu-toolbox-24.10 npx quorum-genesis-tool --consensus raft --chainID 1337 --blockperiod 5 --requestTimeout 10 --epochLength 30000 --difficulty 1 --gasLimit '0xFFFFFF' --coinbase '0x0000000000000000000000000000000000000000' --validators $NUM_NODES --members 0 --bootnodes 0 --outputPath 'artifacts'
+toolbox run --container ubuntu-toolbox-24.10 npx quorum-genesis-tool \
+    --consensus raft --chainID 1337 --blockperiod 5 --requestTimeout 10 \
+    --epochLength 30000 --difficulty 1 --gasLimit '0xFFFFFF' \
+    --coinbase '0x0000000000000000000000000000000000000000' --validators $NUM_NODES \
+    --members 0 --bootnodes 0 --outputPath 'artifacts'
 mv artifacts/2*/* artifacts/
 rmdir artifacts/2*
 
