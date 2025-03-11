@@ -11,34 +11,34 @@ sleep 5
 params="P1,P2"
 agent=$(cat ./raft/n1/data/keystore/accountAddress)
 host="ws://192.168.2.1:32000"
-ct_path="assets/contracts/IDS.sol"
+ct_path="./contracts/IDS.sol"
 
-python assets/contractor.py --host $host \
+python ./contractor.py --host $host \
     deploy --contract $ct_path --params $params --agents $agent \
     > ./raft/deployment.json
 
 abi=$(cat ./raft/deployment.json | jq -rc '.abi')
 address=$(cat ./raft/deployment.json | jq -rc '.transactionReceipt.contractAddress')
 
-python assets/contractor.py --host $host \
+python ./contractor.py --host $host \
     interact --abi $abi --address $address \
     populate --key 12 --action ciao
 
-python assets/contractor.py --host $host \
+python ./contractor.py --host $host \
     interact --abi $abi --address $address \
     subscribe > ./raft/events.txt &
 
-python assets/contractor.py --host $host \
+python ./contractor.py --host $host \
     interact --abi $abi --address $address \
     propose --key P1 --value 1
 
-python assets/contractor.py --host ws://192.168.2.2:32000 \
+python ./contractor.py --host ws://192.168.2.2:32000 \
     interact --abi $abi --address $address \
     propose --key P2 --value 2
 
-python assets/contractor.py --host ws://192.168.2.2:32000 \
+python ./contractor.py --host ws://192.168.2.2:32000 \
     send --address $agent --value 10
 
-python assets/contractor.py --host $host \
+python ./contractor.py --host $host \
     interact --abi $abi --address $address \
     get --key P1
