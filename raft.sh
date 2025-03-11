@@ -9,16 +9,16 @@ export NUM_NODES
 sleep 5
 
 params="P1,P2"
-agent=$(cat raft/n1/data/keystore/accountAddress)
+agent=$(cat ./raft/n1/data/keystore/accountAddress)
 host="ws://192.168.2.1:32000"
 ct_path="assets/contracts/IDS.sol"
 
 python assets/contractor.py --host $host \
     deploy --contract $ct_path --params $params --agents $agent \
-    > deployment.json
+    > ./raft/deployment.json
 
-abi=$(cat deployment.json | jq -rc '.abi')
-address=$(cat deployment.json | jq -rc '.transactionReceipt.contractAddress')
+abi=$(cat ./raft/deployment.json | jq -rc '.abi')
+address=$(cat ./raft/deployment.json | jq -rc '.transactionReceipt.contractAddress')
 
 python assets/contractor.py --host $host \
     interact --abi $abi --address $address \
@@ -26,7 +26,7 @@ python assets/contractor.py --host $host \
 
 python assets/contractor.py --host $host \
     interact --abi $abi --address $address \
-    subscribe > events.txt &
+    subscribe > ./raft/events.txt &
 
 python assets/contractor.py --host $host \
     interact --abi $abi --address $address \
