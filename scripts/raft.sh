@@ -22,7 +22,7 @@ address=$(cat ./raft/deployment.json | jq -rc '.transactionReceipt.contractAddre
 
 python ./contractor.py --host $host \
     interact --abi $abi --address $address \
-    populate --key 12 --action ciao
+    populate --state 10 --action ciao
 
 python ./contractor.py --host $host \
     interact --abi $abi --address $address \
@@ -34,7 +34,7 @@ python ./contractor.py --host $host \
 
 python ./contractor.py --host ws://192.168.2.2:32000 \
     interact --abi $abi --address $address \
-    propose --key P2 --value 2
+    propose --key P2 --value 0
 
 python ./contractor.py --host ws://192.168.2.2:32000 \
     send --address $agent --value 10
