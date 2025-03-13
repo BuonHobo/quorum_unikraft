@@ -1,10 +1,10 @@
 .unikraft
 .ropeproject
 .vscode
-venv*
+.venv
 package-lock.json
 node_modules
-raft
+deployment
 irs-blockchain
 deployment.json
 events.txt

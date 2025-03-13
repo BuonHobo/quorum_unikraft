@@ -100,9 +100,9 @@ async def interact(w3: AsyncWeb3, args):
 
 
 async def send(w3: AsyncWeb3, address: ChecksumAddress, value: int):
-    tx_hash = await w3.eth.send_transaction({"to": address, "value": value}) # type: ignore
+    tx_hash = await w3.eth.send_transaction({"to": address, "value": value})  # type: ignore
     tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(w3.to_json(tx_receipt)) # type: ignore
+    print(w3.to_json(tx_receipt))  # type: ignore
 
 
 async def subscribe(w3: AsyncWeb3, contract: AsyncContract):
@@ -116,7 +116,7 @@ async def subscribe(w3: AsyncWeb3, contract: AsyncContract):
 async def populate(w3: AsyncWeb3, contract: AsyncContract, key, action):
     tx_hash = await contract.functions.insertMap([key], [action]).transact()
     tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(w3.to_json(tx_receipt)) # type: ignore
+    print(w3.to_json(tx_receipt))  # type: ignore
 
 
 async def get(w3: AsyncWeb3, contract: AsyncContract, key):
@@ -127,7 +127,7 @@ async def get(w3: AsyncWeb3, contract: AsyncContract, key):
 async def propose(w3: AsyncWeb3, contract: AsyncContract, key, value):
     tx_hash = await contract.functions.proposeNewValues([key], [value]).transact()
     tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
-    print(w3.to_json(tx_receipt)) # type: ignore
+    print(w3.to_json(tx_receipt))  # type: ignore
 
 
 async def deploy(w3: AsyncWeb3, path: Path, params, agents):

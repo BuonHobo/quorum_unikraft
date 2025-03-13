@@ -1,24 +1,16 @@
 #!/bin/bash
-NUM_NODES=3
-export NUM_NODES
-
-./scripts/stop.sh
-./scripts/initialize.sh
-./scripts/start.sh
-
-sleep 5
 
 params="P1,P2"
-agent=$(cat ./raft/n1/data/keystore/accountAddress)
+agent=$(cat ./deployment/n1/data/keystore/accountAddress)
 host="ws://192.168.2.1:32000"
 ct_path="./contracts/IDS.sol"
 
 python ./contractor.py --host $host \
     deploy --contract $ct_path --params $params --agents $agent \
-    > ./raft/deployment.json
+    > ./deployment/deployment.json
 
-abi=$(cat ./raft/deployment.json | jq -rc '.abi')
-address=$(cat ./raft/deployment.json | jq -rc '.transactionReceipt.contractAddress')
+abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
+address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
 
 python ./contractor.py --host $host \
     interact --abi $abi --address $address \
@@ -26,7 +18,7 @@ python ./contractor.py --host $host \
 
 python ./contractor.py --host $host \
     interact --abi $abi --address $address \
-    subscribe > ./raft/events.txt &
+    subscribe > ./deployment/events.txt &
 
 python ./contractor.py --host $host \
     interact --abi $abi --address $address \
