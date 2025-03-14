@@ -4,9 +4,13 @@ consensus=$1
 num_validators=$2
 num_members=$3
 
-if [ -z "$consensus" ] || [ -z "$num_validators" ] || [ -z "$num_members" ]; then
+if [ -z "$consensus" ] || [ -z "$num_validators" ]; then
     echo "Usage: $0 <consensus> <num_validators> <num_members>"
     exit 1
+fi
+
+if [ -z "$num_members" ]; then
+    num_members=0
 fi
 
 ./scripts/stop.sh
