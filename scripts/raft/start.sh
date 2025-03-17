@@ -17,10 +17,10 @@ for dir in n*; do
             --rm --detach --name n$i \
             -e PRIVATE_CONFIG=ignore \
             --network deployment:192.168.2.$i \
-            -v n$i:/node -M 1Gi \
+            -v n$i:/node -M 2Gi \
         buonhobo/geth -- /geth \
             --datadir /node/data \
-            --networkid 1234 --nodiscover --verbosity 3 \
+            --networkid 1234 --nodiscover --verbosity 0 \
             --syncmode full --nousb \
             --raft --raftblocktime 1000 --raftport 53000 \
             --ws --ws.addr 0.0.0.0 --ws.port 32000 --ws.origins "*" \
