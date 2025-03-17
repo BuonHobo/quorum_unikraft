@@ -7,6 +7,6 @@ address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contrac
 rm -rf out
 
 python ./contractor/benchmark.py --hosts $hosts \
-    --rps 130 --duration 40 --timeout 60 --processes 4 \
+    --rps 80 --duration 40 --timeout 120 --processes 4 \
     --output ./out.csv \
     contract --abi $abi --address $address \

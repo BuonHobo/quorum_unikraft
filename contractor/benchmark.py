@@ -59,7 +59,14 @@ def entrypoint():
     timeout = args.timeout
 
     Benchmark(
-        hosts, rps, duration, output, processes, timeout, worker, worker_args # type: ignore
+        hosts,
+        rps,
+        duration,
+        output,
+        processes,
+        timeout,
+        worker,
+        worker_args,  # type: ignore
     ).start()
 
 
