@@ -16,7 +16,7 @@ def main():
 
     deploy_parser = subparsers.add_parser("deploy", help="Deploy a contract")
     deploy_parser.add_argument(
-        "--contract", help="Contract to deploy", required=True, type=str
+        "--contract", help="Path to the contract to deploy", required=True, type=Path
     )
     deploy_parser.add_argument(
         "--params", help="Parameters to deploy", required=True, type=str
@@ -73,7 +73,7 @@ async def handle_args(args):
 
         match args.toplevel_command:
             case "deploy":
-                await deploy(w3, Path(args.contract), args.params, args.agents)
+                await deploy(w3, args.contract, args.params, args.agents)
             case "interact":
                 await interact(w3, args)
             case "send":

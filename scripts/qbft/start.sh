@@ -18,7 +18,7 @@ for dir in n*; do
             -v n$i:/node -M 1Gi \
         buonhobo/geth -- /geth \
             --datadir /node/data \
-            --networkid 1234 --nodiscover --verbosity 5 \
+            --networkid 1234 --nodiscover --verbosity 3 \
             --syncmode full --nousb \
             $val \
             --ws --ws.addr 0.0.0.0 --ws.port 32000 --ws.origins "*" \
