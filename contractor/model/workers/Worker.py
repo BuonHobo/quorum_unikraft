@@ -5,15 +5,17 @@ from time import time
 from typing import Optional
 
 from web3 import WebSocketProvider
-from model.Benchmark import Benchmark
 from web3.middleware import ExtraDataToPOAMiddleware
 from web3 import AsyncWeb3
+from typing import TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from model.Benchmark import Benchmark
 
 class Worker:
     def __init__(
         self,
-        benchmark: Benchmark,
+        benchmark: 'Benchmark',
         barrier: Barrier,  # type: ignore
         log_queue: Queue,
         i: int,
