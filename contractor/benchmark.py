@@ -3,7 +3,9 @@ from multiprocessing import Barrier, cpu_count
 from pathlib import Path
 
 
-from bench_utils import Benchmark, ContractWorker, MoneyWorker
+from model.Benchmark import Benchmark
+from model.workers.ContractWorker import ContractWorker
+from model.workers.MoneyWorker import MoneyWorker
 
 
 def entrypoint():
