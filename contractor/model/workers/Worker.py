@@ -8,7 +8,7 @@ from web3.middleware import ExtraDataToPOAMiddleware
 from web3 import AsyncWeb3
 from typing import TYPE_CHECKING
 
-from model.workers.WorkerStrategy import WorkerStrategy
+from model.strategies.WorkerStrategy import WorkerStrategy
 
 if TYPE_CHECKING:
     from model.Benchmark import Benchmark

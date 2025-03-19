@@ -5,8 +5,8 @@ from pathlib import Path
 
 from model.workers.Worker import Worker
 from model.Benchmark import Benchmark
-from model.workers.ContractStrategy import ContractStrategy
-from model.workers.MoneyStrategy import MoneyStrategy
+from model.strategies.ContractStrategy import ContractStrategy
+from model.strategies.MoneyStrategy import MoneyStrategy
 
 
 def entrypoint():

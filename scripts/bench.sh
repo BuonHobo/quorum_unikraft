@@ -9,4 +9,4 @@ rm -rf out
 python ./contractor/benchmark.py --hosts $hosts \
     --rps 10 --duration 10 --timeout 120 --processes 4 \
     --output ./out.csv \
-    #contract --abi $abi --address $address \
+    contract --abi $abi --address $address \

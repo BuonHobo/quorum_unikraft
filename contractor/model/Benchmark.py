@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
 
-from model.workers.WorkerStrategy import WorkerStrategy
+from model.strategies.WorkerStrategy import WorkerStrategy
 from model.Logger import Logger
 from model.workers.Worker import Worker
 
