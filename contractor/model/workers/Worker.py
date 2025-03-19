@@ -101,6 +101,3 @@ class Worker:
             print(f"Exception in pid {self.i} on host {host}: {e}")
         finally:
             self.log_queue.put((self.i, host, nonce, start, send, rcpt))
-
-    async def prepare_transaction(self, connector, nonce, **kwargs):
-        raise NotImplementedError("This method should be implemented by subclasses.")
