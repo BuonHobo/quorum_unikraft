@@ -1,7 +1,8 @@
-from multiprocessing import Barrier, Process, Queue
+from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
 
+from model.workers.WorkerStrategy import WorkerStrategy
 from model.Logger import Logger
 from model.workers.Worker import Worker
 
@@ -15,8 +16,7 @@ class Benchmark:
         output_file: Path,
         processes: int,
         timeout: int,
-        worker: type[Worker],
-        worker_args: dict,
+        strategy: WorkerStrategy,
     ) -> None:
         self.hosts = hosts
         self.rps = rps
@@ -25,8 +25,7 @@ class Benchmark:
         self.processes = processes
         self.timeout = timeout
         self.log_queue = Queue()
-        self.worker = worker
-        self.worker_args = worker_args
+        self.strategy = strategy
 
     def start(self):
         log_queue = Queue()
@@ -35,13 +34,7 @@ class Benchmark:
         )
         logger.start()
 
-        barrier = Barrier(self.processes)
-        subprocesses = [
-            Process(
-                target=self.worker(self, barrier, log_queue, i, self.worker_args).run
-            )
-            for i in range(self.processes)
-        ]
+        subprocesses = Worker.get_pool(self, log_queue, self.processes, self.strategy)
         for process in subprocesses:
             process.start()
         for process in subprocesses:

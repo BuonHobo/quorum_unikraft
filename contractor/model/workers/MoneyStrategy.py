@@ -2,13 +2,14 @@ from random import choice
 from typing import override
 
 from hexbytes import HexBytes
-from model.workers.Worker import Worker
+from web3 import AsyncWeb3
+from model.workers.WorkerStrategy import WorkerStrategy
 from eth_account.signers.local import LocalAccount
 
 
-class MoneyWorker(Worker):
+class MoneyStrategy(WorkerStrategy):
+    @override
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
         self.account: LocalAccount = None  # type: ignore
 
     @staticmethod
@@ -26,19 +27,20 @@ class MoneyWorker(Worker):
         await connector.eth.wait_for_transaction_receipt(tx_hash)
 
     @override
-    async def prepare(self):
+    async def prepare_worker(self, worker):
+        connector = choice(worker.connectors)
+        self.setup_account(connector)
         await self.fund_address(
-            choice(self.connectors),
+            connector,
             self.account.address,
-            self.benchmark.duration * self.benchmark.rps * 2,
+            worker.benchmark.duration * worker.benchmark.rps * 2,
         )
 
-    async def setup_account(self):
-        self.account = choice(self.connectors).eth.account.create()
-        pass
+    def setup_account(self, connector: AsyncWeb3):
+        self.account = connector.eth.account.create()
 
     @override
-    async def prepare_transaction(self, connector, nonce, **kwargs) -> HexBytes:
+    async def send_transaction(self, connector: AsyncWeb3, nonce, pid) -> HexBytes:
         tx = {
             "from": self.account.address,
             "to": connector.eth.default_account,
@@ -48,4 +50,5 @@ class MoneyWorker(Worker):
             "gasPrice": 0,
             "chainId": 1337,
         }  # type: ignore
-        return connector.eth.account.sign_transaction(tx, self.account.key)
+        signed_tx = connector.eth.account.sign_transaction(tx, self.account.key)
+        return await connector.eth.send_raw_transaction(signed_tx.raw_transaction)

@@ -4,8 +4,8 @@ from pathlib import Path
 
 
 from model.Benchmark import Benchmark
-from model.workers.ContractWorker import ContractWorker
-from model.workers.MoneyWorker import MoneyWorker
+from model.workers.ContractStrategy import ContractStrategy
+from model.workers.MoneyStrategy import MoneyStrategy
 
 
 def entrypoint():
@@ -47,11 +47,9 @@ def entrypoint():
 
     args = global_parser.parse_args()
     if args.type == "contract":
-        worker = ContractWorker
-        worker_args = {"contract_address": args.address, "contract_abi": args.abi}
+        strategy = ContractStrategy(args.address, args.abi)
     else:
-        worker = MoneyWorker
-        worker_args = None
+        strategy = MoneyStrategy()
     hosts = args.hosts.split(",")
     rps = args.rps
     duration = args.duration
@@ -67,8 +65,7 @@ def entrypoint():
         output,
         processes,
         timeout,
-        worker,
-        worker_args,  # type: ignore
+        strategy,
     ).start()
 
 
