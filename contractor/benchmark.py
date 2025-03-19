@@ -3,6 +3,7 @@ from multiprocessing import Barrier, cpu_count
 from pathlib import Path
 
 
+from model.workers.Worker import Worker
 from model.Benchmark import Benchmark
 from model.workers.ContractStrategy import ContractStrategy
 from model.workers.MoneyStrategy import MoneyStrategy
@@ -59,13 +60,7 @@ def entrypoint():
     timeout = args.timeout
 
     Benchmark(
-        hosts,
-        rps,
-        duration,
-        output,
-        processes,
-        timeout,
-        strategy,
+        hosts, rps, duration, output, processes, timeout, strategy, Worker
     ).start()
 
 

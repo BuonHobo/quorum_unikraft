@@ -17,6 +17,7 @@ class Benchmark:
         processes: int,
         timeout: int,
         strategy: WorkerStrategy,
+        worker: type[Worker],
     ) -> None:
         self.hosts = hosts
         self.rps = rps
@@ -26,6 +27,7 @@ class Benchmark:
         self.timeout = timeout
         self.log_queue = Queue()
         self.strategy = strategy
+        self.worker = worker
 
     def start(self):
         log_queue = Queue()
@@ -34,7 +36,9 @@ class Benchmark:
         )
         logger.start()
 
-        subprocesses = Worker.get_pool(self, log_queue, self.processes, self.strategy)
+        subprocesses = self.worker.get_pool(
+            self, log_queue, self.processes, self.strategy
+        )
         for process in subprocesses:
             process.start()
         for process in subprocesses:
