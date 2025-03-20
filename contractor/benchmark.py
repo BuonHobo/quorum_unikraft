@@ -54,14 +54,17 @@ def entrypoint():
         "--address", help="Address of the deployed contract", type=str
     )
     contract_parser.add_argument("--abi", help="ABI of the deployed contract", type=str)
+    contract_parser.add_argument(
+        "--size",
+        help="Number of transactions to batch",
+        required=False,
+        type=int,
+        default=1,
+    )
+    subparser.add_parser("baseline")
 
     args = global_parser.parse_args()
     hosts = args.hosts.split(",")
-    rps = args.rps
-    duration = args.duration
-    output = args.output
-    processes = args.processes
-    timeout = args.timeout
 
     if args.local:
         if args.type == "contract":
@@ -70,12 +73,19 @@ def entrypoint():
             strategy = MoneyStrategy()
     else:
         if args.type == "contract":
-            strategy = NodeContractStrategy(args.address, args.abi, hosts)
+            strategy = NodeContractStrategy(args.address, args.abi, hosts, args.size)
         else:
             strategy = NodeMoneyStrategy(hosts)
 
     Benchmark(
-        hosts, rps, duration, output, processes, timeout, strategy, Worker
+        hosts,
+        args.rps,
+        args.duration,
+        args.output,
+        args.processes,
+        args.timeout,
+        strategy,
+        Worker,
     ).start()
 
 

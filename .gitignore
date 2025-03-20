@@ -10,3 +10,4 @@ irs-blockchain
 deployment.json
 events.txt
 data
+build/.config.build_qemu-x86_64

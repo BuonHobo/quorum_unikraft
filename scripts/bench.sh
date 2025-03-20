@@ -1,12 +1,25 @@
 #!/bin/bash
 
-hosts="ws://192.168.2.4:32000,ws://192.168.2.5:32000"
-abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
-address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
+hosts="ws://192.168.2.4:32000,ws://192.168.2.5:32000,ws://192.168.2.6:32000,ws://192.168.2.7:32000,ws://192.168.2.8:32000"
 
-rm -rf out
 
-python ./contractor/benchmark.py --hosts $hosts \
-    --rps 80 --duration 40 --timeout 60 --processes 4 \
-    --output ./out.csv \
-    contract --abi $abi --address $address
+
+for consensus in {raft,qbft}; do
+    for rps in {1,20,40,60,80,100}; do
+        ./scripts/deploy.sh $consensus 3 8
+        abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
+        address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
+        python ./contractor/benchmark.py --hosts $hosts \
+            --rps $rps --duration 30 --timeout 30 --processes 4 \
+            --output ./data/${consensus}_contract_${rps}.csv \
+            contract --abi $abi --address $address --size 1
+
+        ./scripts/deploy.sh $consensus 3 8
+        abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
+        address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
+        python ./contractor/benchmark.py --hosts $hosts \
+        --rps $rps --duration 30 --timeout 30 --processes 4 \
+        --output ./data/${consensus}_baseline_${rps}.csv 
+    done
+done
+

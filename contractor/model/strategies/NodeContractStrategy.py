@@ -16,11 +16,13 @@ class NodeContractStrategy(WorkerStrategy):
         contract_address: str,
         contract_abi: str,
         hosts: list[str],
+        size: int = 1,
         *args,
         **kwargs,
     ) -> None:
         self.contract_address = contract_address
         self.contract_abi = contract_abi
+        self.size = size
         self.contract: AsyncContract = None  # type: ignore
         self.connector_to_contract: dict[AsyncWeb3, AsyncContract] = None  # type: ignore
         self.host_to_id = {host: i for i, host in enumerate(hosts)}
@@ -59,7 +61,9 @@ class NodeContractStrategy(WorkerStrategy):
 
         return (
             await self.connector_to_contract[connector]
-            .functions.proposeNewValues(["P0"], [nonce])
+            .functions.proposeNewValues(
+                [f"P{i}" for i in range(self.size)], [i+nonce+pid for i in range(self.size)]
+            )
             .transact(
                 {
                     "nonce": nonce,

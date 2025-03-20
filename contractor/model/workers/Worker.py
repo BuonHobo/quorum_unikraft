@@ -74,7 +74,7 @@ class Worker:
             await asyncio.sleep(offset)
             t_start = time()
             while time() - t_start < self.benchmark.duration + offset:
-                host = randint(0, len(self.benchmark.hosts) - 1)
+                host = (nonce + self.i) % len(self.benchmark.hosts)
                 connector = self.connectors[host]
                 g.create_task(self.transaction(connector, nonce, host))
                 nonce += 1
