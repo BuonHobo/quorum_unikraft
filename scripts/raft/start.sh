@@ -17,7 +17,7 @@ for dir in n*; do
             --rm --detach --name n$i \
             -e PRIVATE_CONFIG=ignore \
             --network deployment:192.168.2.$i \
-            -v n$i:/node -M 2Gi \
+            -v n$i:/node -M 512Mi \
         buonhobo/geth -- /geth \
             --datadir /node/data \
             --networkid 1234 --nodiscover --verbosity 0 \
@@ -46,11 +46,11 @@ for dir in n*; do
             --rm --detach --name n$j \
             -e PRIVATE_CONFIG=ignore \
             --network deployment:192.168.2.$j \
-            -v n$j:/node -M 1Gi \
+            -v n$j:/node -M 512Mi \
         buonhobo/geth -- /geth \
             --datadir /node/data \
             --networkid 1234 --nodiscover --verbosity 0 --raftjoinexisting $id \
-            --syncmode fast --nousb \
+            --syncmode full --nousb \
             --raft --raftblocktime 1000 --raftport 53000 \
             --ws --ws.addr 0.0.0.0 --ws.port 32000 --ws.origins "*" \
             --ws.api admin,eth,debug,miner,net,txpool,personal,web3,raft \

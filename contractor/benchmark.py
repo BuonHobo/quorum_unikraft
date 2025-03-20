@@ -1,8 +1,10 @@
 import argparse
-from multiprocessing import Barrier, cpu_count
+from multiprocessing import cpu_count
 from pathlib import Path
 
 
+from model.strategies.NodeMoneyStrategy import NodeMoneyStrategy
+from model.strategies.NodeContractStrategy import NodeContractStrategy
 from model.workers.Worker import Worker
 from model.Benchmark import Benchmark
 from model.strategies.ContractStrategy import ContractStrategy
@@ -39,6 +41,13 @@ def entrypoint():
         type=int,
         default=30,
     )
+    global_parser.add_argument(
+        "--local",
+        help="Whether to sign the transactions locally",
+        required=False,
+        action="store_true",
+        default=False,
+    )
     subparser = global_parser.add_subparsers(title="type", dest="type")
     contract_parser = subparser.add_parser("contract")
     contract_parser.add_argument(
@@ -47,17 +56,23 @@ def entrypoint():
     contract_parser.add_argument("--abi", help="ABI of the deployed contract", type=str)
 
     args = global_parser.parse_args()
-    if args.type == "contract":
-        strategy = ContractStrategy(args.address, args.abi)
-    else:
-        strategy = MoneyStrategy()
     hosts = args.hosts.split(",")
     rps = args.rps
     duration = args.duration
     output = args.output
     processes = args.processes
-    barrier = Barrier(processes)
     timeout = args.timeout
+
+    if args.local:
+        if args.type == "contract":
+            strategy = ContractStrategy(args.address, args.abi)
+        else:
+            strategy = MoneyStrategy()
+    else:
+        if args.type == "contract":
+            strategy = NodeContractStrategy(args.address, args.abi, hosts)
+        else:
+            strategy = NodeMoneyStrategy(hosts)
 
     Benchmark(
         hosts, rps, duration, output, processes, timeout, strategy, Worker
