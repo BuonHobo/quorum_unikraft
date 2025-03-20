@@ -1,6 +1,5 @@
 import asyncio
 from multiprocessing import Process, Queue, Barrier
-from random import randint
 from time import time
 
 from web3 import WebSocketProvider
