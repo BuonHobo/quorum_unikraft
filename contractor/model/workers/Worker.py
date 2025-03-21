@@ -1,5 +1,6 @@
 import asyncio
 from multiprocessing import Process, Queue, Barrier
+from random import randint
 from time import time
 
 from web3 import WebSocketProvider
@@ -73,7 +74,7 @@ class Worker:
             await asyncio.sleep(offset)
             t_start = time()
             while time() - t_start < self.benchmark.duration + offset:
-                host = (nonce + self.i) % len(self.benchmark.hosts)
+                host = randint(0, len(self.benchmark.hosts) - 1)
                 connector = self.connectors[host]
                 g.create_task(self.transaction(connector, nonce, host))
                 nonce += 1

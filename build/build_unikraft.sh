@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd build
-rm -rf .unikraft .config*
+sudo rm -rf .unikraft .config*
 
 podman run --rm --replace -d -p 8080:1234 --name buildkitd --privileged moby/buildkit:latest --addr tcp://0.0.0.0:1234
 
