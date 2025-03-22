@@ -10,7 +10,7 @@ for i in {0..200}; do
 
 done
 agent=$(cat ./deployment/n1/data/keystore/accountAddress)
-host="ws://192.168.2.1:32000"
+host=$1
 ct_path="./contracts/IDS.sol"
 
 python ./contractor/contractor.py --host $host \

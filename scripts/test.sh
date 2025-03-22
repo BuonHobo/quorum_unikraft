@@ -1,29 +1,27 @@
 #!/bin/bash
 
 rps=130
-attempt=3
+attempt=4
 processes=3
-hosts="ws://192.168.2.1:32000,ws://192.168.2.2:32000,ws://192.168.2.3:32000"
+hosts="ws://localhost:32001,ws://localhost:32002,ws://localhost:32003"
 duration=30
-timeout=60
+timeout=30
 size=1
 consensus=raft
 kind=contract
 
-./scripts/deploy.sh $consensus 3
 abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
 address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
-sleep 5
 
 if [[ $kind == "contract" ]]; then
     python ./contractor/benchmark.py --hosts $hosts \
         --rps $rps --duration $duration --timeout $timeout --processes $processes \
-        --output ./data/test/${consensus}-contract_${rps}_${attempt}.csv \
+        --output ./datatest/${consensus}-contract_${rps}_${attempt}.csv \
         contract --abi $abi --address $address --size $size
 fi
 
 if [[ $kind == "baseline" ]]; then
     python ./contractor/benchmark.py --hosts $hosts \
         --rps $rps --duration $duration --timeout $timeout --processes $processes \
-        --output ./data/test/${consensus}-baseline_${rps}_${attempt}.csv
+        --output ./datatest/${consensus}-baseline_${rps}_${attempt}.csv
 fi

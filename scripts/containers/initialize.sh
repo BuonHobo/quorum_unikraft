@@ -10,8 +10,6 @@ if [ -z "$consensus" ] || [ -z "$num_validators" ] || [ -z "$num_members" ]; the
     exit 1
 fi
 
-./scripts/unikraft/net_start.sh
-
 sudo rm -rf ./deployment
 mkdir deployment
 cd deployment
@@ -28,8 +26,8 @@ rmdir artifacts/2*
 
 #Configure enode urls
 for i in $( seq 1 $(($num_validators + $num_members)) ); do
-    ip="192.168.2.$i"
-    sed -i "0,/<HOST>/ s/<HOST>/${ip}/" artifacts/goQuorum/static-nodes.json
+    host="127.0.0.1:3030$i?discport=0\&raftport=5300$i"
+    sed -i "0,/<HOST>/ s/<HOST>:30303?discport=0\&raftport=53000/${host}/" artifacts/goQuorum/static-nodes.json
 done
 
 # If consensus is raft, split validators and members. Raft needs the members to be added later as learners
@@ -73,4 +71,4 @@ for i in $( seq 1 $(($num_validators + $num_members)) ); do
     cd ..
 done
 
-echo "ws://192.168.2.1:32000" > host
+echo "ws://localhost:32001" > host
