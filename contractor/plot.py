@@ -1,96 +1,89 @@
 # Load the newly uploaded dataset
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 def main():
-    attempts = 2
-    rpses = [1, 20, 40, 60, 80, 100]
-    name_to_inputs = {}
-    name_to_in_stds = {}
-    name_to_outputs = {}
-    name_to_out_stds = {}
-    name_to_latencies = {}
-    name_to_lat_stds = {}
-    for consensus in ["raft", "qbft"]:
-        for kind in ["baseline", "contract"]:
-            name = f"{consensus}_{kind}"
-            name_to_inputs[name] = []
-            name_to_in_stds[name] = []
-            name_to_outputs[name] = []
-            name_to_out_stds[name] = []
-            name_to_latencies[name] = []
-            name_to_lat_stds[name] = []
-            for rps in rpses:
-                input_throughputs = []
-                output_throughputs = []
-                latencies = []
-                for attempt in range(1, attempts + 1):
-                    df = pd.read_csv(f"data/{consensus}_{kind}_{rps}_{attempt}.csv")
-                    input_period = df["sent_time"].max() - df["sent_time"].min()
-                    output_period = (
-                        df["recv_time"].max()
-                        - df["recv_time"].where(df["recv_time"] > 0).min()
-                    )
-                    input_throughput = len(df) / input_period
-                    output_throughput = (
-                        len(df.where(df["recv_time"] != None)) / output_period
-                    )
+    name_to_data = {}
 
-                    latency = (
-                        df["recv_time"].where(df["recv_time"] > 0).mean()
-                        - df["sent_time"].mean()
-                    )
+    for file in os.listdir("data"):
+        if not file.endswith(".csv"):
+            continue
+        name, rps, attempt = file.removesuffix(".csv").split("_")
+        rps = int(rps)
+        attempt = int(attempt)
+        name = name
+        if name not in name_to_data:
+            name_to_data[name] = {}
+            for datapoint in ["input", "output", "latency"]:
+                name_to_data[name][datapoint] = {
+                    "std": [],
+                    "mean": [],
+                    "datapoints": {},
+                }
+        for datapoint in ["input", "output", "latency"]:
+            if rps not in name_to_data[name][datapoint]["datapoints"]:
+                name_to_data[name][datapoint]["datapoints"][rps] = []
+        df = pd.read_csv(f"data/{file}")
+        input_period = df["sent_time"].max() - df["sent_time"].min()
+        output_period = (
+            df["recv_time"].max() - df["recv_time"].where(df["recv_time"] > 0).min()
+        )
+        input_throughput = len(df) / input_period
+        output_throughput = len(df.where(df["recv_time"] != None)) / output_period
 
-                    latencies.append(latency)
-                    input_throughputs.append(input_throughput)
-                    output_throughputs.append(output_throughput)
-                name_to_inputs[name].append(np.mean(input_throughputs))
-                name_to_in_stds[name].append(np.std(input_throughputs))
-                name_to_outputs[name].append(np.mean(output_throughputs))
-                name_to_out_stds[name].append(np.std(output_throughputs))
-                name_to_latencies[name].append(np.mean(latencies))
-                name_to_lat_stds[name].append(np.std(latencies))
+        latency = (
+            df["recv_time"].where(df["recv_time"] > 0).mean() - df["sent_time"].mean()
+        )
 
-    for name in name_to_inputs:
+        name_to_data[name]["input"]["datapoints"][rps].append(input_throughput)
+        name_to_data[name]["output"]["datapoints"][rps].append(output_throughput)
+        name_to_data[name]["latency"]["datapoints"][rps].append(latency)
+
+    for data in name_to_data.values():
+        for datapoint in ["input", "output", "latency"]:
+            for attemps in data[datapoint]["datapoints"].values():
+                data[datapoint]["mean"].append(np.mean(attemps))
+                data[datapoint]["std"].append(np.std(attemps))
+
+    for name, data in name_to_data.items():
         if "baseline" in name:
             linestyle = "--"
         else:
             linestyle = "-"
         plt.errorbar(
-            name_to_inputs[name],
-            name_to_outputs[name],
-            xerr=name_to_in_stds[name],
-            yerr=name_to_out_stds[name],
+            data["input"]["mean"],
+            data["output"]["mean"],
+            xerr=data["input"]["std"],
+            yerr=data["output"]["std"],
             linestyle=linestyle,
             label=f"{name}",
         )
-    plt.xlim(0, 100)
-    plt.ylim(0, 100)
     plt.xlabel("Input Throughput (req/s)")
     plt.ylabel("Output Throughput (req/s)")
     plt.legend()
-    plt.savefig("plots/plot2.png")
+    plt.savefig("plots/throughput.png")
     plt.clf()
-    for name in name_to_latencies:
+
+    for name, data in name_to_data.items():
         if "baseline" in name:
             linestyle = "--"
         else:
             linestyle = "-"
         plt.errorbar(
-            name_to_inputs[name],
-            name_to_latencies[name],
-            yerr=name_to_lat_stds[name],
-            xerr=name_to_in_stds[name],
+            data["input"]["mean"],
+            data["latency"]["mean"],
+            yerr=data["latency"]["std"],
+            xerr=data["input"]["std"],
             linestyle=linestyle,
             label=f"{name}",
         )
-    plt.xlim(0, 100)
     plt.xlabel("Input Throughput (req/s)")
     plt.ylabel("Response Latency (s)")
     plt.legend()
-    plt.savefig("plots/plot3.png")
+    plt.savefig("plots/latency.png")
 
 
 if __name__ == "__main__":

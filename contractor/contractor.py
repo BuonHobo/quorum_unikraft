@@ -32,18 +32,18 @@ def main():
     interact_parser.add_argument(
         "--abi", help="abi of the deployed contract", required=True, type=str
     )
-    intercat_subparsers = interact_parser.add_subparsers(dest="command")
+    interact_subparsers = interact_parser.add_subparsers(dest="command")
 
-    propose_parser = intercat_subparsers.add_parser("propose", help="Propose a value")
+    propose_parser = interact_subparsers.add_parser("propose", help="Propose a value")
     propose_parser.add_argument("--key", help="Key to propose", required=True, type=str)
     propose_parser.add_argument(
         "--value", help="Value to propose", required=True, type=int
     )
 
-    get_parser = intercat_subparsers.add_parser("get", help="Get a value")
+    get_parser = interact_subparsers.add_parser("get", help="Get a value")
     get_parser.add_argument("--key", help="Key to get", required=True, type=str)
 
-    populate_parser = intercat_subparsers.add_parser(
+    populate_parser = interact_subparsers.add_parser(
         "populate", help="Populate a contract"
     )
     populate_parser.add_argument(
@@ -53,7 +53,7 @@ def main():
         "--action", help="Value to propose", required=True, type=str
     )
 
-    intercat_subparsers.add_parser("subscribe", help="Subscribe to a contract")
+    interact_subparsers.add_parser("subscribe", help="Subscribe to a contract")
 
     send_parser = subparsers.add_parser("send", help="Send a transaction")
     send_parser.add_argument(

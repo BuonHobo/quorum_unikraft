@@ -7,6 +7,7 @@ for i in {0..200}; do
     else
         params="$params,P$i"
     fi
+
 done
 agent=$(cat ./deployment/n1/data/keystore/accountAddress)
 host="ws://192.168.2.1:32000"
