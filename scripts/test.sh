@@ -1,27 +1,38 @@
 #!/bin/bash
 
-rps=250
+rps=100
 attempt=5
 processes=3
-hosts="ws://192.168.122.20:32000,ws://192.168.122.141:32000,ws://192.168.122.158:32000"
+hosts=""
+for node in deployment/n*; do
+    ip=$(cat $node/wsurl)
+    if [[ -z "$hosts" ]]; then
+        hosts="$ip"
+        host="$ip"
+    else
+        hosts="$hosts,$ip"
+    fi
+done
 duration=30
 timeout=30
 size=1
 consensus=raft
 kind=contract
 
+./scripts/interact.sh $host
+
 abi=$(cat ./deployment/deployment.json | jq -rc '.abi')
 address=$(cat ./deployment/deployment.json | jq -rc '.transactionReceipt.contractAddress')
 
 if [[ $kind == "contract" ]]; then
-    python ./contractor/benchmark.py --hosts $hosts \
+    python ./benchmark/benchmark.py --hosts $hosts \
         --rps $rps --duration $duration --timeout $timeout --processes $processes \
         --output ./datatest/${consensus}-contract_${rps}_${attempt}.csv \
         contract --abi $abi --address $address --size $size
 fi
 
 if [[ $kind == "baseline" ]]; then
-    python ./contractor/benchmark.py --hosts $hosts \
+    python ./benchmark/benchmark.py --hosts $hosts \
         --rps $rps --duration $duration --timeout $timeout --processes $processes \
         --output ./datatest/${consensus}-baseline_${rps}_${attempt}.csv
 fi

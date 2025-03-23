@@ -16,7 +16,7 @@ for dir in n*; do
     podman run -d --rm -e PRIVATE_CONFIG=ignore --replace --name n$i \
         --label quorum=true --cpus 1 --net host \
         -v $(pwd)/n$i:/node:Z \
-        docker.io/quorumengineering/quorum \
+        docker.io/quorumengineering/quorum geth \
         --datadir /node/data \
         --networkid 1234 --nodiscover --verbosity 0 \
         --syncmode full --nousb \
@@ -24,8 +24,7 @@ for dir in n*; do
         --ws --ws.addr 0.0.0.0 --ws.port 3200$i --ws.origins "*" \
         --ws.api admin,eth,debug,miner,net,txpool,personal,web3,raft \
         --unlock ${ADDRESS} --allow-insecure-unlock --password /node/data/keystore/accountPassword \
-        --port 3030$i \
-        &>/dev/null &
+        --port 3030$i 
 done
 
 sleep 5
@@ -48,7 +47,7 @@ for dir in n*; do
     podman run -d --rm -e PRIVATE_CONFIG=ignore --replace --name n$i \
         --label quorum=true --cpus 1 --net host \
         -v $(pwd)/n$i:/node:Z \
-        docker.io/quorumengineering/quorum \
+        docker.io/quorumengineering/quorum geth \
         --datadir /node/data \
         --networkid 1234 --nodiscover --verbosity 0 --raftjoinexisting $id \
         --syncmode full --nousb \

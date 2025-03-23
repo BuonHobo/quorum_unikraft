@@ -9,11 +9,11 @@ for i in {0..200}; do
     fi
 
 done
-agent=$(cat ./deployment/n1/data/keystore/accountAddress)
+agent=$(cat ./deployment/node1/data/keystore/accountAddress)
 host=$1
 ct_path="./contracts/IDS.sol"
 
-python ./contractor/contractor.py --host $host \
+python ./benchmark/contractor.py --host $host \
     deploy --contract $ct_path --params $params --agents $agent \
     > ./deployment/deployment.json
 
