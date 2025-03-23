@@ -24,7 +24,6 @@ class Raft(Consensus):
         await asyncio.gather(
             *[self.add_learner(member) for member in self.get_members()]
         )
-        return None
 
     async def add_learner(self, member: Node):
         validator = choice(self.get_validators())

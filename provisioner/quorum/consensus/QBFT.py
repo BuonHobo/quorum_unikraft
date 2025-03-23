@@ -16,7 +16,6 @@ class QBFT(Consensus):
     @override
     async def start(self):
         await asyncio.gather(*[node.start() for node in self.nodes])
-        return
 
 
 class QBFTNode(Node):
