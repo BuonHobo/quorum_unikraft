@@ -40,7 +40,7 @@ for dir in n*; do
     j="${dir//n}"
     enode=$(jq .[$(($j-$i-1))] members.json -rc)
     echo enode is $enode
-    id=$(geth attach ws://127.0.0.1:32001 --exec "raft.addLearner(\"$enode\")")
+    id=$(geth attach $(cat host) --exec "raft.addLearner(\"$enode\")")
 
     ADDRESS=$(grep -o '"address": *"[^"]*"' n$j/data/keystore/accountKeystore | grep -o '"[^"]*"$' | sed 's/"//g')
     

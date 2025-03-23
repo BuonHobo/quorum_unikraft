@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rps=130
-attempt=4
+rps=250
+attempt=5
 processes=3
-hosts="ws://localhost:32001,ws://localhost:32002,ws://localhost:32003"
+hosts="ws://192.168.122.20:32000,ws://192.168.122.141:32000,ws://192.168.122.158:32000"
 duration=30
 timeout=30
 size=1
