@@ -1,0 +1,45 @@
+{
+    "virtualizers": [
+        {
+            "name": "podman",
+            "version": "3.4.0"
+        },
+        {
+            "name": "host",
+            "version": "20.04"
+        }
+    ],
+    "quorum": {
+        "consensus": {
+            "name": "raft",
+            "directory": "./deployment",
+            "toolboxContainer": "ubuntu-toolbox-24.10",
+            "nodes": [
+                {
+                    "name": "node1",
+                    "role": "validator",
+                    "verbosity": 0,
+                    "virtualizer": {
+                        "name": "podman"
+                    }
+                },
+                {
+                    "name": "node4",
+                    "role": "member",
+                    "verbosity": 0,
+                    "virtualizer": {
+                        "name": "podman"
+                    }
+                },
+                {
+                    "name": "node2",
+                    "role": "validator",
+                    "verbosity": 0,
+                    "virtualizer": {
+                        "name": "host"
+                    }
+                }
+            ]
+        }
+    }
+}
