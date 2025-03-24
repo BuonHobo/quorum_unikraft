@@ -1,13 +1,13 @@
-.unikraft
-.ropeproject
+build/unikraft/.config.build_qemu-x86_64
+build/unikraft/.unikraft
+build/bootc/manifest-qcow2.json
+build/bootc/qcow2/disk.qcow2
 .vscode
 .venv
 __pycache__
 package-lock.json
 node_modules
 irs-blockchain
-events.txt
 deployment
 !provisioner/deployment
 data*
-.config.build_qemu-x86_64

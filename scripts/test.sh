@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rps=100
-attempt=5
+attempt=6
 processes=3
 hosts=""
 for node in deployment/n*; do

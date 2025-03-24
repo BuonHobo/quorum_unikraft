@@ -2,70 +2,56 @@ from pathlib import Path
 from typing import override
 
 from provinew.quorum.node.NodeData import ConnData
-from provinew.utils.Utils import Runner
-from provinew.virtualization.Virtualizer import VirtData, Virtualizer
+from provinew.virtualization.Virtualizer import (
+    HostNetVirtualizer,
+    VirtData,
+    Virtualizer,
+)
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from provinew.quorum.node.Node import Node
 
 
-class Unikraft(Virtualizer):
-    class UnikraftData(VirtData):
+class Unitest(HostNetVirtualizer):
+    class UnitestData(VirtData):
         @override
-        def __init__(
-            self, virtualizer: "Virtualizer", node_ip: str, image: str, memory: str
-        ) -> None:
+        def __init__(self, virtualizer: "Virtualizer", image: str, memory: str) -> None:
             super().__init__(virtualizer)
             self.image = image
-            self.node_ip = node_ip
             self.memory = memory
 
     @override
     def initialize(self, jsondata: dict):
         self.image = jsondata["image"]
-        self.network_name = jsondata["network"]
-        self.host_cidr = jsondata["host_cidr"]
         self.memory = jsondata["memory"]
-        self.host_ip = self.host_cidr.split("/")[0]
-        self.net_started = False
-
-        raise NotImplementedError("Unikraft virtualization is not supported anymore")
 
     @override
     def handle_node(self, node: "Node", jsondata: dict) -> VirtData:
-        return Unikraft.UnikraftData(
+        return Unitest.UnitestData(
             self,
-            jsondata["ip"],
             jsondata.get("image", self.image),
             jsondata.get("memory", self.memory),
         )
 
     @override
     def get_stop_command(self):
-        return (
-            "sudo KRAFTKIT_NO_WARN_SUDO=1 kraft rm --all ;"
-            f"sudo KRAFTKIT_NO_WARN_SUDO=1 kraft net remove {self.network_name}"
-        )
+        return "kraft rm --all"
 
     @override
     async def pre_start(self, node: "Node"):
-        if not self.net_started:
-            await Runner.run(
-                "sudo KRAFTKIT_NO_WARN_SUDO=1 kraft net create "
-                f"{self.network_name} --network {self.host_cidr}"
-            )
-            self.net_started = True
+        pass
 
     @override
     def get_start_command(self, node: "Node", options: str):
         assert node.data is not None
-        assert isinstance(node.virt_data, Unikraft.UnikraftData)
+        assert isinstance(node.virt_data, Unitest.UnitestData)
         command = (
-            f"sudo KRAFTKIT_NO_WARN_SUDO=1 "
             f"kraft run -d --rm "
             f"--name {node.name} "
-            f"--network {self.network_name}:{node.virt_data.node_ip} "
+            f"-p {node.data.connection_data.port}:{node.data.connection_data.port} "
+            f"-p {node.data.connection_data.raft_port}:{node.data.connection_data.raft_port} "
+            f"-p {node.data.connection_data.ws_port}:{node.data.connection_data.ws_port} "
             f"-v {node.data.dir}:/node "
             f"-M {node.virt_data.memory} "
             f"{node.virt_data.image} -- /geth "
@@ -75,9 +61,9 @@ class Unikraft(Virtualizer):
 
     @override
     def get_conn_data(self, node: "Node") -> "ConnData":
-        assert isinstance(node.virt_data, Unikraft.UnikraftData)
+        assert isinstance(node.virt_data, Unitest.UnitestData)
         return ConnData(
-            node.virt_data.node_ip,
+            self.host_ip,
             port=30300 + node.id + 1,
             ws_port=32000 + node.id + 1,
             raft_port=53000 + node.id + 1,

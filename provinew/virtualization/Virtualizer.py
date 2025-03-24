@@ -1,49 +1,32 @@
-import asyncio
 import importlib
-import logging
 from pathlib import Path
-import subprocess
 
-from typing import TYPE_CHECKING
+import socket
+from typing import TYPE_CHECKING, Optional
 
+from provinew.utils.Utils import Runner
 
 if TYPE_CHECKING:
-    from provinew.quorum.Node import Node
-    from provinew.quorum.NodeData import ConnData
+    from provinew.quorum.node.Node import Node
+    from provinew.quorum.node.NodeData import ConnData
+
+
+class VirtData:
+    def __init__(self, virtualizer: "Virtualizer") -> None:
+        self.virtualizer = virtualizer
 
 
 class Virtualizer:
-    def __init__(self, jsondata: dict):
-        self.name = jsondata["name"]
-        self.nodes = []
-
-    def add_node(self, node: "Node"):
-        self.nodes.append(node)
-        self.handle_node(node)
-
-    def handle_node(self, node: "Node"):
+    def handle_node(self, node: "Node", jsondata: dict) -> VirtData:
         raise NotImplementedError("This method must be implemented by the subclass")
 
-    def stop(self):
+    def get_stop_command(self) -> str:
         raise NotImplementedError("This method must be implemented by the subclass")
 
-    async def start(self, node: "Node", **options_kwargs):
-        logging.info(f"Starting {node.name}")
-        await self.prepare(node)
-        command = self.get_command(node, **options_kwargs).split()
-        p = await asyncio.create_subprocess_exec(
-            *command,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-        await p.wait()
-        await asyncio.sleep(1)
+    async def pre_start(self, node: "Node"):
+        raise NotImplementedError("This method must be implemented by the subclass")
 
-    async def prepare(self, node: "Node"):
-        pass
-
-    def get_command(self, node: "Node", **kwargs) -> str:
+    def get_start_command(self, node: "Node", options: str) -> str:
         raise NotImplementedError("This method must be implemented by the subclass")
 
     def get_conn_data(self, node: "Node") -> "ConnData":
@@ -52,8 +35,32 @@ class Virtualizer:
     def get_mapped_dir(self, node: "Node") -> Path:
         raise NotImplementedError("This method must be implemented by the subclass")
 
-    def get_mapped_ip(self, node: "Node") -> str:
+    def get_env(self, node: "Node") -> Optional[dict]:
+        return
+
+    def initialize(self, jsondata: dict):
         raise NotImplementedError("This method must be implemented by the subclass")
+
+    def __init__(self, jsondata: dict):
+        self.name = jsondata["name"]
+        self.nodes: list["Node"] = []
+        self.initialize(jsondata)
+
+    def add_node(self, node: "Node", jsondata: dict) -> VirtData:
+        self.nodes.append(node)
+        return self.handle_node(node, jsondata)
+
+    async def stop(self):
+        cmd = self.get_stop_command()
+        await Runner.run(cmd)
+
+    async def start(self, node: "Node", options: str):
+        assert node.data is not None
+        cmd = self.get_start_command(node, options)
+        env = self.get_env(node)
+        node.data.dir.joinpath("cmd").write_text(cmd)
+        await self.pre_start(node)
+        await Runner.run(cmd, env)
 
     @staticmethod
     def init_virtualizers(virtualizers: list[dict]):
@@ -68,4 +75,16 @@ class Virtualizer:
         name = str(jsondata["name"]).capitalize()
         module = importlib.import_module("provinew.virtualization." + name)
         virtualizer = getattr(module, name)
-        return name, virtualizer(jsondata)
+        return jsondata["name"], virtualizer(jsondata)
+
+
+class HostNetVirtualizer(Virtualizer):
+    def __init__(self, jsondata: dict):
+        super().__init__(jsondata)
+        self.host_ip = self.get_default_ip()
+
+    def get_default_ip(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(0)
+            s.connect(("1.1.1.1", 1))
+            return s.getsockname()[0]

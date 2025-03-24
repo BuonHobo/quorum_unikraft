@@ -1,55 +1,70 @@
-import asyncio
-import logging
 from pathlib import Path
-import subprocess
 from typing import override
 
-from provisioner.virtualization.Virtualizer import PrivateNetVirtualizer
+from provinew.quorum.node.NodeData import ConnData
+from provinew.utils.Utils import Runner
+from provinew.virtualization.Virtualizer import VirtData, Virtualizer
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provisioner.quorum.Node import Node
+    from provinew.quorum.node.Node import Node
 
 
-class Virtmanager(PrivateNetVirtualizer):
+class Virtmanager(Virtualizer):
+    class VirtmanagerData(VirtData):
+        @override
+        def __init__(self, virtualizer: "Virtualizer", node_ip: str) -> None:
+            super().__init__(virtualizer)
+            self.node_ip = node_ip
+
     @override
-    def get_command(self, node: "Node", **kwargs):
-        assert node.init_data is not None
-        command = f"ssh {self.ip} geth " + node.get_options(**kwargs)
+    def initialize(self, jsondata: dict):
+        self.host_ip = jsondata["host_ip"]
+        raise NotImplementedError("Virtmanager virtualization is not supported anymore")
+
+    @override
+    def handle_node(self, node: "Node", jsondata: dict) -> VirtData:
+        return Virtmanager.VirtmanagerData(
+            self,
+            jsondata["ip"],
+        )
+
+    @override
+    def get_stop_command(self):
+        command = ""
+        for node in self.nodes:
+            assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
+            ip = node.virt_data.node_ip
+            command += f"ssh {ip} killall geth;"
         return command
 
     @override
-    def get_mapped_dir(self, node: "Node") -> Path:
-        assert node.init_data is not None
-        return Path("node")
-
-    @override
-    async def prepare(self, node: "Node"):
-        assert node.init_data is not None
-        logging.info(f"Preparing the {node.name} virtual machine")
-        for command in [
-            f"ssh {self.ip} killall geth",
-            f"ssh {self.ip} rm -rf node",
-            f"scp -r {node.init_data.dir} {self.ip}:~/node",
-        ]:
-            p = await asyncio.create_subprocess_exec(
-                *command.split(),
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            await p.wait()
-
-    @override
-    async def start(self, node: "Node", **options_kwargs):
-        await self.prepare(node)
-        logging.info(f"Starting {node.name}")
-
-        command = self.get_command(node, **options_kwargs).split()
-        await asyncio.create_subprocess_exec(
-            *command,
-            start_new_session=True,
-            stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+    async def pre_start(self, node: "Node"):
+        assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
+        assert node.data is not None
+        command = (
+            f"ssh {node.virt_data.node_ip} rm -rf node;"
+            f"scp -r {node.data.dir} {node.virt_data.node_ip}:~/node"
         )
+        await Runner.run(command)
+
+    @override
+    def get_start_command(self, node: "Node", options: str):
+        assert node.data is not None
+        assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
+        command = f"nohup ssh {node.virt_data.node_ip} geth {options} &> {node.data.dir.joinpath('output.txt')} &"
+        return command
+
+    @override
+    def get_conn_data(self, node: "Node") -> "ConnData":
+        assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
+        return ConnData(
+            node.virt_data.node_ip,
+            port=30300 + node.id + 1,
+            ws_port=32000 + node.id + 1,
+            raft_port=53000 + node.id + 1,
+        )
+
+    @override
+    def get_mapped_dir(self, node: "Node") -> Path:
+        return Path("~/node")

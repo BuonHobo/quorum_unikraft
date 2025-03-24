@@ -1,0 +1,17 @@
+{
+  "customizations": {
+    "user": [
+      {
+        "name": "quorum",
+        "password": "quorum",
+        "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2yqlXe37TuAUovkdfkJJoBuUXD1JjewJdCSPI8J8rvNmLguuNa1Ytq+6ACX09mEbpbR9qVkszAhwBXwule1Z7DtY1e1mhZfoXZyMrmnrUCqlinJJPGWDpTXmRJkMoG63Hbi6PnB45skk+47ZcQ8qEpyDwNKWAYZJxFqCOKgZXF2WOGh5XKPvD32u87gd3j1P1KgSt2hSfU/+O7o/TTLq/trb7Sd2EUKJ6itHBek68XKLFlMkABg7SCO8+xjdMnNBE9rbDuxJatX0dr2z5HwM9RyY5yW7C2D11gKfC0JZR02+1o9kRSFjiEFhXM7m7p/lCaYQothCUVZFQiczZx0Kt",
+        "groups": [
+          "wheel"
+        ]
+      }
+    ],
+    "kernel": {
+      "append": "quiet"
+    }
+  }
+}

@@ -1,7 +1,7 @@
 FROM quay.io/fedora/fedora-bootc:latest
 
 RUN dnf install -y ca-certificates curl openssl wget
-RUN wget https://artifacts.consensys.net/public/go-quorum/raw/versions/v24.4.1/geth_v24.4.1_linux_amd64.tar.gz
-RUN tar -xvf geth_v24.4.1_linux_amd64.tar.gz; \
+RUN wget https://artifacts.consensys.net/public/go-quorum/raw/versions/v24.4.1/geth_v24.4.1_linux_amd64.tar.gz; \
+    tar -xvf geth_v24.4.1_linux_amd64.tar.gz; \
     mv geth /usr/local/bin/; \
     rm -rf geth_v24.4.1_linux_amd64.tar.gz
