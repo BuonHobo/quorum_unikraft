@@ -15,7 +15,7 @@ class Quorum:
     def __init__(self, jsondata: dict):
         self.directory: Path = Path(jsondata["directory"]).resolve()
         self.toolbox_container: Optional[str] = jsondata.get("toolboxContainer")
-        self.consensus: Consensus = Consensus.get_consensus(jsondata["consensus"])
+        self.consensus: Consensus = Consensus.get_consensus(jsondata)
         virtualizers = Virtualizer.init_virtualizers(jsondata["virtualizers"])
         self.virtualizers = virtualizers.values()
         self.nodes: list[Node] = [

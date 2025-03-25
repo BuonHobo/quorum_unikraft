@@ -15,11 +15,11 @@ class Consensus:
         raise NotImplementedError("This method must be implemented by the subclass")
 
     def __init__(self, jsondata: dict):
-        self.name: str = jsondata["name"]
+        self.name: str = jsondata["consensus"]
 
     @staticmethod
     def get_consensus(jsondata: dict):
-        name = str(jsondata["name"]).capitalize()
+        name = str(jsondata["consensus"]).capitalize()
         module = importlib.import_module("provinew.quorum.consensus." + name)
         consensus = getattr(module, name)
         return consensus(jsondata)

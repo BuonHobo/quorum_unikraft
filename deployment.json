@@ -1,18 +1,16 @@
 {
     "benchmark": {
         "name": "quorum",
-        "tx_rate": 100,
+        "tx_rate": 200,
         "duration": 30,
         "output_file": "datatest/output.csv",
         "timeout": 30,
-        "strategy": "baseline",
+        "strategy": "contract",
         "processes": 3,
         "tx_size": 2
     },
     "quorum": {
-        "consensus": {
-            "name": "raft"
-        },
+        "consensus": "raft",
         "contract": {
             "path": "contracts/IDS.sol",
             "version": "0.8.19",
@@ -56,7 +54,7 @@
             {
                 "name": "unitest",
                 "image": "buonhobo/geth",
-                "memory": "1Gi"
+                "memory": "1G"
             },
             {
                 "name": "qemu",
@@ -72,28 +70,20 @@
                 "name": "node1",
                 "role": "validator",
                 "agent": true,
+                "target": true,
                 "verbosity": 0,
                 "virtualizer": {
-                    "name": "podman"
+                    "name": "unitest"
                 }
             },
             {
                 "name": "node2",
-                "role": "member",
+                "role": "validator",
                 "verbosity": 0,
                 "agent": true,
                 "target": true,
                 "virtualizer": {
-                    "name": "podman"
-                }
-            },
-            {
-                "name": "node3",
-                "role": "validator",
-                "verbosity": 0,
-                "target": true,
-                "virtualizer": {
-                    "name": "podman"
+                    "name": "unitest"
                 }
             }
         ]

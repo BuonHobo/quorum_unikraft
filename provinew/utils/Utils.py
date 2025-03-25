@@ -13,6 +13,6 @@ class Runner:
             env = os.environ.update(env)
         print(f"Running command: {command}")
         p = await asyncio.create_subprocess_shell(
-            command, env=env, stdin=subprocess.DEVNULL
+            command, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL
         )
         await p.wait()

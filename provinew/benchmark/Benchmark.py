@@ -29,6 +29,11 @@ class Benchmark:
         self.hosts = [
             node.get_conn_data().get_ws_url() for node in self.quorum.get_targets()
         ]
+        self.host_to_name = {
+            node.get_conn_data().get_ws_url(): node.name
+            for node in self.quorum.get_targets()
+        }
+        self.nodes = self.quorum.get_targets()
         self.strategy.prepare_strategy()
         log_queue = Queue()
         logger = Process(

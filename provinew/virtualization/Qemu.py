@@ -69,9 +69,9 @@ class Qemu(Virtualizer):
             f",hostfwd=tcp::{node.get_conn_data().raft_port}-:{node.get_conn_data().raft_port},hostfwd=udp::{node.get_conn_data().raft_port}-:{node.get_conn_data().raft_port}"
             f",hostfwd=tcp::{node.get_conn_data().ws_port}-:{node.get_conn_data().ws_port},hostfwd=udp::{node.get_conn_data().ws_port}-:{node.get_conn_data().ws_port} "
             f"-device e1000,netdev=net0 -display none "
-            f"-name quorum_{node.name} -enable-kvm -daemonize ;"
-            f"ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost rm -rf node ;"
-            f"scp -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r -P {node.virt_data.ssh_port} {node.get_dir()} {node.virt_data.user}@localhost:~/node"
+            f"-name quorum_{node.name} -enable-kvm -daemonize ; "
+            f"ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost rm -rf node ; "
+            f"scp -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r -P {node.virt_data.ssh_port} {node.get_dir()} {node.virt_data.user}@localhost:node"
         )
         await Runner.run(command)
 
@@ -93,4 +93,4 @@ class Qemu(Virtualizer):
 
     @override
     def get_mapped_dir(self, node: "Node") -> Path:
-        return Path("~/node")
+        return Path("node")

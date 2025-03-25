@@ -100,4 +100,6 @@ class Worker:
         except Exception as e:
             print(f"Exception in pid {self.i} on host {host}: {e}")
         finally:
+            uri = connector.provider.endpoint_uri
+            host = self.benchmark.host_to_name[uri]
             self.log_queue.put((self.i, host, nonce, start, send, rcpt))
