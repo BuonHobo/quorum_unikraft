@@ -4,7 +4,6 @@ from typing import override
 from provinew.quorum.node.NodeData import ConnData
 from provinew.utils.Utils import Runner
 from provinew.virtualization.Virtualizer import (
-    HostNetVirtualizer,
     VirtData,
     Virtualizer,
 )
@@ -14,7 +13,7 @@ if TYPE_CHECKING:
     from provinew.quorum.node.Node import Node
 
 
-class Qemu(HostNetVirtualizer):
+class Qemu(Virtualizer):
     class QemuData(VirtData):
         @override
         def __init__(
@@ -61,27 +60,25 @@ class Qemu(HostNetVirtualizer):
         return command
 
     @override
-    async def pre_start(self, node: "Node"):
+    async def pre_start(self, node: "Node") -> None:
         assert isinstance(node.virt_data, Qemu.QemuData)
-        assert node.data is not None
         command = (
             f"qemu-system-x86_64 -drive file={node.virt_data.qcow},format=qcow2,snapshot=on -m {node.virt_data.memory} "
             f"-smp {node.virt_data.cpus} -netdev user,id=net0,hostfwd=tcp::{node.virt_data.ssh_port}-:22"
-            f",hostfwd=tcp::{node.data.connection_data.port}-:{node.data.connection_data.port},hostfwd=udp::{node.data.connection_data.port}-:{node.data.connection_data.port}"
-            f",hostfwd=tcp::{node.data.connection_data.raft_port}-:{node.data.connection_data.raft_port},hostfwd=udp::{node.data.connection_data.raft_port}-:{node.data.connection_data.raft_port}"
-            f",hostfwd=tcp::{node.data.connection_data.ws_port}-:{node.data.connection_data.ws_port},hostfwd=udp::{node.data.connection_data.ws_port}-:{node.data.connection_data.ws_port} "
+            f",hostfwd=tcp::{node.get_conn_data().port}-:{node.get_conn_data().port},hostfwd=udp::{node.get_conn_data().port}-:{node.get_conn_data().port}"
+            f",hostfwd=tcp::{node.get_conn_data().raft_port}-:{node.get_conn_data().raft_port},hostfwd=udp::{node.get_conn_data().raft_port}-:{node.get_conn_data().raft_port}"
+            f",hostfwd=tcp::{node.get_conn_data().ws_port}-:{node.get_conn_data().ws_port},hostfwd=udp::{node.get_conn_data().ws_port}-:{node.get_conn_data().ws_port} "
             f"-device e1000,netdev=net0 -display none "
             f"-name quorum_{node.name} -enable-kvm -daemonize ;"
             f"ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost rm -rf node ;"
-            f"scp -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r -P {node.virt_data.ssh_port} {node.data.dir} {node.virt_data.user}@localhost:~/node"
+            f"scp -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r -P {node.virt_data.ssh_port} {node.get_dir()} {node.virt_data.user}@localhost:~/node"
         )
         await Runner.run(command)
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
         assert isinstance(node.virt_data, Qemu.QemuData)
-        command = f"nohup ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost geth {options} &> {node.data.dir.joinpath('output.txt')} &"
+        command = f"nohup ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost geth {options} &> {node.get_dir().joinpath('output.txt')} &"
         return command
 
     @override

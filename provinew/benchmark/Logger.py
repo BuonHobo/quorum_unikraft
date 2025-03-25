@@ -4,7 +4,8 @@ from time import time
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from model.Benchmark import Benchmark
+    from benchmark.Benchmark import Benchmark
+
 
 class Logger:
     def __init__(

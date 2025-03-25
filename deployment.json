@@ -1,17 +1,54 @@
 {
+    "benchmark": {
+        "name": "quorum",
+        "tx_rate": 100,
+        "duration": 30,
+        "output_file": "datatest/output.csv",
+        "timeout": 30,
+        "strategy": "baseline",
+        "processes": 3,
+        "tx_size": 2
+    },
     "quorum": {
         "consensus": {
             "name": "raft"
         },
-        "contract":{
-            "path": "contracts/IDS.sol"
+        "contract": {
+            "path": "contracts/IDS.sol",
+            "version": "0.8.19",
+            "params": 5,
+            "numagents4params": 1,
+            "extra_agents": [
+                "0xa8d8d247af547e38a7e1017116d93b6ce92d6212"
+            ],
+            "events": {
+                "01001": "ciao",
+                "01010": "hello"
+            },
+            "exec": [
+                {
+                    "method": "proposeNewValues",
+                    "args": [
+                        [
+                            "P_2",
+                            "P_1"
+                        ],
+                        [
+                            3,
+                            2
+                        ]
+                    ]
+                }
+            ]
         },
         "directory": "./deployment",
         "toolboxContainer": "ubuntu-toolbox-24.10",
         "virtualizers": [
             {
                 "name": "podman",
-                "image": "docker.io/quorumengineering/quorum"
+                "image": "docker.io/quorumengineering/quorum",
+                "cpus": 1,
+                "memory": "1G"
             },
             {
                 "name": "host"
@@ -34,33 +71,29 @@
             {
                 "name": "node1",
                 "role": "validator",
+                "agent": true,
                 "verbosity": 0,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
             },
             {
                 "name": "node2",
-                "role": "validator",
+                "role": "member",
                 "verbosity": 0,
+                "agent": true,
+                "target": true,
                 "virtualizer": {
-                    "name": "unitest"
-                }
-            },
-            {
-                "name": "member1",
-                "role": "validator",
-                "verbosity": 0,
-                "virtualizer": {
-                    "name": "qemu"
+                    "name": "podman"
                 }
             },
             {
                 "name": "node3",
                 "role": "validator",
                 "verbosity": 0,
+                "target": true,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
             }
         ]

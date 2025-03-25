@@ -4,7 +4,6 @@ from typing import override
 from provinew.quorum.node.NodeData import ConnData
 from provinew.virtualization.Virtualizer import (
     VirtData,
-    HostNetVirtualizer,
     Virtualizer,
 )
 from typing import TYPE_CHECKING
@@ -13,22 +12,30 @@ if TYPE_CHECKING:
     from provinew.quorum.node.Node import Node
 
 
-class Podman(HostNetVirtualizer):
+class Podman(Virtualizer):
     class PodmanData(VirtData):
         @override
-        def __init__(self, virtualizer: "Virtualizer", cpus: int, image: str) -> None:
+        def __init__(
+            self, virtualizer: "Virtualizer", cpus: int, image: str, memory: str
+        ) -> None:
             super().__init__(virtualizer)
             self.cpus = cpus
             self.image = image
+            self.memory = memory
 
     @override
     def initialize(self, jsondata: dict):
         self.image = jsondata["image"]
+        self.memory = jsondata["memory"]
+        self.cpus = jsondata["cpus"]
 
     @override
     def handle_node(self, node: "Node", jsondata: dict) -> VirtData:
         return Podman.PodmanData(
-            self, jsondata.get("cpus", 1), jsondata.get("image", self.image)
+            self,
+            jsondata.get("cpus", self.cpus),
+            jsondata.get("image", self.image),
+            jsondata.get("memory", self.memory),
         )
 
     @override
@@ -41,15 +48,15 @@ class Podman(HostNetVirtualizer):
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
         assert isinstance(node.virt_data, Podman.PodmanData)
         command = (
             f"podman run -d --rm --replace "
             f"--name {node.name} "
             f"--label quorum=true "
             f"--cpus {node.virt_data.cpus} "
+            f"--memory {node.virt_data.memory} "
             f"--net host "
-            f"-v {node.data.dir}:/node:Z "
+            f"-v {node.get_dir()}:/node:Z "
             f"{node.virt_data.image} "
             f"{options}"
         )
@@ -63,7 +70,6 @@ class Podman(HostNetVirtualizer):
             ws_port=32000 + node.id + 1,
             raft_port=53000 + node.id + 1,
         )
-
 
     @override
     def get_mapped_dir(self, node: "Node") -> Path:

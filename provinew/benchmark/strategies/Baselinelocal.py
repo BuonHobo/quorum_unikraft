@@ -3,14 +3,16 @@ from typing import override
 
 from hexbytes import HexBytes
 from web3 import AsyncWeb3
-from model.strategies.WorkerStrategy import WorkerStrategy
+from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from eth_account.signers.local import LocalAccount
 
 
-class MoneyStrategy(WorkerStrategy):
+class Baselinelocal(WorkerStrategy):
     @override
     def __init__(self, *args, **kwargs) -> None:
         self.account: LocalAccount = None  # type: ignore
+        raise NotImplementedError("Baselinelocal is not supported anymore")
+
 
     @staticmethod
     async def fund_address(connector, address, amount):

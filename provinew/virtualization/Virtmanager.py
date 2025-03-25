@@ -41,18 +41,16 @@ class Virtmanager(Virtualizer):
     @override
     async def pre_start(self, node: "Node"):
         assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
-        assert node.data is not None
         command = (
             f"ssh {node.virt_data.node_ip} rm -rf node;"
-            f"scp -r {node.data.dir} {node.virt_data.node_ip}:~/node"
+            f"scp -r {node.get_dir()} {node.virt_data.node_ip}:~/node"
         )
         await Runner.run(command)
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
         assert isinstance(node.virt_data, Virtmanager.VirtmanagerData)
-        command = f"nohup ssh {node.virt_data.node_ip} geth {options} &> {node.data.dir.joinpath('output.txt')} &"
+        command = f"nohup ssh {node.virt_data.node_ip} geth {options} &> {node.get_dir().joinpath('output.txt')} &"
         return command
 
     @override

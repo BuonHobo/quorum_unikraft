@@ -3,7 +3,6 @@ from typing import override
 
 from provinew.quorum.node.NodeData import ConnData
 from provinew.virtualization.Virtualizer import (
-    HostNetVirtualizer,
     VirtData,
     Virtualizer,
 )
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
     from provinew.quorum.node.Node import Node
 
 
-class Unitest(HostNetVirtualizer):
+class Unitest(Virtualizer):
     class UnitestData(VirtData):
         @override
         def __init__(self, virtualizer: "Virtualizer", image: str, memory: str) -> None:
@@ -44,15 +43,14 @@ class Unitest(HostNetVirtualizer):
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
         assert isinstance(node.virt_data, Unitest.UnitestData)
         command = (
             f"kraft run -d --rm "
             f"--name {node.name} "
-            f"-p {node.data.connection_data.port}:{node.data.connection_data.port} "
-            f"-p {node.data.connection_data.raft_port}:{node.data.connection_data.raft_port} "
-            f"-p {node.data.connection_data.ws_port}:{node.data.connection_data.ws_port} "
-            f"-v {node.data.dir}:/node "
+            f"-p {node.get_conn_data().port}:{node.get_conn_data().port} "
+            f"-p {node.get_conn_data().raft_port}:{node.get_conn_data().raft_port} "
+            f"-p {node.get_conn_data().ws_port}:{node.get_conn_data().ws_port} "
+            f"-v {node.get_dir()}:/node "
             f"-M {node.virt_data.memory} "
             f"{node.virt_data.image} -- /geth "
             f"{options}"

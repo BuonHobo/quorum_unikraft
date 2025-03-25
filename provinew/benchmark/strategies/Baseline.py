@@ -4,21 +4,28 @@ from typing import override
 
 from hexbytes import HexBytes
 from web3 import AsyncWeb3, WebSocketProvider
-from model.workers.Worker import Worker
-from model.strategies.WorkerStrategy import WorkerStrategy
+from provinew.benchmark.workers.Worker import Worker
+from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
+from provinew.quorum.Quorum import Quorum
 
 
-class NodeMoneyStrategy(WorkerStrategy):
+class Baseline(WorkerStrategy):
     @override
     def __init__(
         self,
-        hosts: list[str],
-        *args,
-        **kwargs,
+        jsondata: dict,
+        quorum: Quorum,
     ) -> None:
+        self.quorum = quorum
         self.address = AsyncWeb3().eth.account.create().address
-        self.host_to_id = {host: i for i, host in enumerate(hosts)}
         self.lock: Lock = Lock()  # type: ignore
+
+    @override
+    def prepare_strategy(self):
+        hosts = [
+            node.get_conn_data().get_ws_url() for node in self.quorum.get_targets()
+        ]
+        self.host_to_id = {host: i for i, host in enumerate(hosts)}
         self.nonces: Array = Array(  # type: ignore
             "i", asyncio.run(self.init_nonces(hosts)), lock=False
         )

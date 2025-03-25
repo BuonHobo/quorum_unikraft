@@ -3,12 +3,12 @@ from multiprocessing import cpu_count
 from pathlib import Path
 
 
-from model.strategies.NodeMoneyStrategy import NodeMoneyStrategy
-from model.strategies.NodeContractStrategy import NodeContractStrategy
-from model.workers.Worker import Worker
-from model.Benchmark import Benchmark
-from model.strategies.ContractStrategy import ContractStrategy
-from model.strategies.MoneyStrategy import MoneyStrategy
+from benchmark.strategies.NodeMoneyStrategy import NodeMoneyStrategy
+from benchmark.strategies.NodeContractStrategy import NodeContractStrategy
+from benchmark.workers.Worker import Worker
+from benchmark.Benchmark import Benchmark
+from benchmark.strategies.ContractStrategy import ContractStrategy
+from benchmark.strategies.MoneyStrategy import MoneyStrategy
 
 
 def entrypoint():

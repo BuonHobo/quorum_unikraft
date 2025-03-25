@@ -3,20 +3,24 @@ from typing import override
 
 from hexbytes import HexBytes
 from web3 import AsyncWeb3
-from model.strategies.WorkerStrategy import WorkerStrategy
+from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from eth_account.signers.local import LocalAccount
 from web3.contract import AsyncContract
 
+from provinew.quorum.Quorum import Quorum
 
-class ContractStrategy(WorkerStrategy):
+
+class Contractlocal(WorkerStrategy):
     @override
     def __init__(
-        self, contract_address: str, contract_abi: str, *args, **kwargs
+        self, jsondata: dict, quorum: Quorum
     ) -> None:
-        self.contract_address = contract_address
-        self.contract_abi = contract_abi
+        self.contract_address = quorum.contract.get_address()
+        self.contract_abi = quorum.contract.get_abi()
         self.account: LocalAccount = None  # type: ignore
         self.contract: AsyncContract = None  # type: ignore
+
+        raise NotImplementedError("Contractlocal is not supported anymore")
 
     def setup_account(self, connector: AsyncWeb3):
         self.account = connector.eth.account.create()

@@ -1,6 +1,8 @@
+from random import choice
 from provinew.quorum.consensus.Consensus import Consensus
 import asyncio
 from typing import Optional
+from provinew.quorum.contract.IDSContract import Contract
 from provinew.quorum.node.Node import Node
 from pathlib import Path
 import shutil
@@ -14,12 +16,18 @@ class Quorum:
         self.directory: Path = Path(jsondata["directory"]).resolve()
         self.toolbox_container: Optional[str] = jsondata.get("toolboxContainer")
         self.consensus: Consensus = Consensus.get_consensus(jsondata["consensus"])
-
         virtualizers = Virtualizer.init_virtualizers(jsondata["virtualizers"])
         self.virtualizers = virtualizers.values()
         self.nodes: list[Node] = [
             Node(node, virtualizers) for node in jsondata["nodes"]
         ]
+        self.contract: Contract = Contract(self.get_agents(), jsondata["contract"])
+
+    def get_agents(self):
+        return [node for node in self.nodes if node.agent]
+
+    def get_targets(self):
+        return [node for node in self.nodes if node.target]
 
     def get_num_validators(self):
         return sum(node.role == "validator" for node in self.nodes)
@@ -33,15 +41,17 @@ class Quorum:
     def get_members(self):
         return [node for node in self.nodes if node.role == "member"]
 
-    async def deploy(self):
-        await self.stop()
-        await self.initialize()
-        await self.consensus.start(self)
+    async def deploy_contract(self):
+        await self.contract.deploy_using_node(choice(self.nodes))
 
     async def stop(self):
-        await asyncio.gather(*[virtualizer.stop() for virtualizer in self.virtualizers])
+        for virtualizer in self.virtualizers:
+            await virtualizer.stop()
 
-    async def initialize(self):
+    async def start(self):
+        await self.consensus.start(self)
+
+    async def initialize(self) -> None:
         await Runner.run(f"rm -rf {self.directory}")
         self.directory.mkdir(parents=True, exist_ok=True)
 

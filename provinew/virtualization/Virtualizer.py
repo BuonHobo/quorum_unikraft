@@ -45,6 +45,13 @@ class Virtualizer:
         self.name = jsondata["name"]
         self.nodes: list["Node"] = []
         self.initialize(jsondata)
+        self.host_ip = self.get_default_ip()
+
+    def get_default_ip(self):
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(0)
+            s.connect(("1.1.1.1", 1))
+            return s.getsockname()[0]
 
     def add_node(self, node: "Node", jsondata: dict) -> VirtData:
         self.nodes.append(node)
@@ -55,10 +62,9 @@ class Virtualizer:
         await Runner.run(cmd)
 
     async def start(self, node: "Node", options: str):
-        assert node.data is not None
         cmd = self.get_start_command(node, options)
         env = self.get_env(node)
-        node.data.dir.joinpath("cmd").write_text(cmd)
+        node.get_dir().joinpath("cmd").write_text(cmd)
         await self.pre_start(node)
         await Runner.run(cmd, env)
 
@@ -76,15 +82,3 @@ class Virtualizer:
         module = importlib.import_module("provinew.virtualization." + name)
         virtualizer = getattr(module, name)
         return jsondata["name"], virtualizer(jsondata)
-
-
-class HostNetVirtualizer(Virtualizer):
-    def __init__(self, jsondata: dict):
-        super().__init__(jsondata)
-        self.host_ip = self.get_default_ip()
-
-    def get_default_ip(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.settimeout(0)
-            s.connect(("1.1.1.1", 1))
-            return s.getsockname()[0]

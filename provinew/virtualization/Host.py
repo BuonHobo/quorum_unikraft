@@ -1,14 +1,14 @@
 from pathlib import Path
 from typing import override
 from provinew.quorum.node.NodeData import ConnData
-from provinew.virtualization.Virtualizer import HostNetVirtualizer, VirtData
+from provinew.virtualization.Virtualizer import Virtualizer, VirtData
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from provinew.quorum.node.Node import Node
 
 
-class Host(HostNetVirtualizer):
+class Host(Virtualizer):
     @override
     def initialize(self, jsondata: dict):
         pass
@@ -27,8 +27,7 @@ class Host(HostNetVirtualizer):
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
-        command = f"nohup geth {options} &> {node.data.dir.joinpath('output.txt')} &"
+        command = f"nohup geth {options} &> {node.get_dir().joinpath('output.txt')} &"
         return command
 
     @override
@@ -47,5 +46,4 @@ class Host(HostNetVirtualizer):
 
     @override
     def get_mapped_dir(self, node: "Node") -> Path:
-        assert node.data is not None
-        return node.data.dir
+        return node.get_dir()

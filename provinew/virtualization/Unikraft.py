@@ -59,14 +59,13 @@ class Unikraft(Virtualizer):
 
     @override
     def get_start_command(self, node: "Node", options: str):
-        assert node.data is not None
         assert isinstance(node.virt_data, Unikraft.UnikraftData)
         command = (
             f"sudo KRAFTKIT_NO_WARN_SUDO=1 "
             f"kraft run -d --rm "
             f"--name {node.name} "
             f"--network {self.network_name}:{node.virt_data.node_ip} "
-            f"-v {node.data.dir}:/node "
+            f"-v {node.get_dir()}:/node "
             f"-M {node.virt_data.memory} "
             f"{node.virt_data.image} -- /geth "
             f"{options}"

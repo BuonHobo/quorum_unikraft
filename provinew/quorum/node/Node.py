@@ -3,8 +3,11 @@ from pathlib import Path
 import shutil
 from typing import Optional, Self
 
+from web3 import AsyncWeb3, WebSocketProvider
+from web3.middleware import ExtraDataToPOAMiddleware
 
-from provinew.quorum.node.NodeData import  NodeData
+
+from provinew.quorum.node.NodeData import NodeData
 
 from typing import TYPE_CHECKING
 
@@ -26,6 +29,8 @@ class Node:
         self.name: str = jsondata["name"]
         self.verbosity = jsondata.get("verbosity", 0)
         self.role: str = jsondata["role"]
+        self.agent: bool = jsondata.get("agent", False)
+        self.target: bool = jsondata.get("target", False)
 
         self.id: int = Node.nodes
         Node.nodes += 1
@@ -37,10 +42,42 @@ class Node:
         ].add_node(self, jsondata["virtualizer"])
         self.data: Optional[NodeData] = None
 
-    async def start(self, consensus_options: str):
+    async def start(self, consensus_options: str) -> None:
         await self.virt_data.virtualizer.start(
             self, self.get_options() + " " + consensus_options
         )
+
+    async def send(self, to_node: Self, value: int) -> None:
+        async with await self.connect() as w3:
+            tx_hash = await w3.eth.send_transaction(
+                {"to": to_node.get_checksum_address(), "value": value}
+            )
+            _tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
+
+    async def connect(self):
+        assert self.data is not None
+        w3: AsyncWeb3 = await AsyncWeb3(
+            WebSocketProvider(self.data.connection_data.get_ws_url())
+        )
+        w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
+        w3.eth.default_account = self.get_checksum_address()
+        return w3
+
+    def get_conn_data(self):
+        assert self.data is not None
+        return self.data.connection_data
+
+    def get_dir(self):
+        assert self.data is not None
+        return self.data.dir
+
+    def get_checksum_address(self):
+        assert self.data is not None
+        return AsyncWeb3.to_checksum_address("0x" + self.data.address)
+
+    def get_address(self):
+        assert self.data is not None
+        return self.data.address
 
     def get_options(self):
         assert self.data is not None
