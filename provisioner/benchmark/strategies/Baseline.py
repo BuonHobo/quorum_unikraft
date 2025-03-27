@@ -63,3 +63,7 @@ class Baseline(WorkerStrategy):
                 "chainId": 1337,
             }  # type: ignore
         )
+
+    @override
+    def get_name(self) -> str:
+        return "baseline"

@@ -80,3 +80,7 @@ class Contract(WorkerStrategy):
                 }  # type: ignore
             )
         )
+
+    @override
+    def get_name(self) -> str:
+        return f"contract-{self.size}"

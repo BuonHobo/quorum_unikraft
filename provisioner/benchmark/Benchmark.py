@@ -5,35 +5,36 @@ from time import sleep
 from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from provisioner.benchmark.Logger import Logger
 from provisioner.benchmark.workers.Worker import Worker
-from provisioner.quorum.Quorum import Quorum
+from provisioner.quorum.node.Node import Node
 
 
 class Benchmark:
     def __init__(
         self,
-        jsondata: dict,
-        quorum: Quorum,
+        strategy: WorkerStrategy,
+        targets: list[Node],
+        timeout: int,
+        processes: int,
+        output_file: Path,
+        duration: int,
+        rps: int,
         worker: type[Worker] = Worker,
     ) -> None:
-        self.rps = jsondata["tx_rate"]
-        self.duration = jsondata["duration"]
-        self.output_file = Path(jsondata["output_file"])
-        self.processes = jsondata["processes"]
-        self.timeout = jsondata["timeout"]
+        self.rps = rps
+        self.duration = duration
+        self.output_file = output_file
+        self.processes = processes
+        self.timeout = timeout
         self.log_queue = Queue()
-        self.strategy = WorkerStrategy.get_strategy(jsondata, quorum)
+        self.strategy = strategy
         self.worker = worker
-        self.quorum = quorum
+        self.targets = targets
+        self.hosts = [target.get_conn_data().get_ws_url() for target in targets]
+        self.host_to_name = {
+            target.get_conn_data().get_ws_url(): target.name for target in targets
+        }
 
     def start(self) -> None:
-        self.hosts = [
-            node.get_conn_data().get_ws_url() for node in self.quorum.get_targets()
-        ]
-        self.host_to_name = {
-            node.get_conn_data().get_ws_url(): node.name
-            for node in self.quorum.get_targets()
-        }
-        self.nodes = self.quorum.get_targets()
         self.strategy.prepare_strategy()
         log_queue = Queue()
         logger = Process(

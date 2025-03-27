@@ -1,13 +1,26 @@
 {
     "benchmark": {
         "name": "quorum",
-        "tx_rate": 200,
+        "tx_rates": [
+            60,
+            80,
+            100,
+            120
+        ],
         "duration": 30,
-        "output_file": "datatest/output.csv",
+        "output_directory": "./datatest",
         "timeout": 30,
-        "strategy": "contract",
+        "strategies": [
+            {
+                "name": "contract",
+                "tx_size": 2
+            },
+            {
+                "name": "baseline"
+            }
+        ],
         "processes": 3,
-        "tx_size": 2
+        "attempts": 3
     },
     "quorum": {
         "consensus": "raft",
