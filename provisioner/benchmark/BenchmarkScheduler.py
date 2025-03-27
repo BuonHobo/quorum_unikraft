@@ -1,6 +1,5 @@
 import asyncio
 from pathlib import Path
-import time
 from provisioner.benchmark.Benchmark import Benchmark
 from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from provisioner.quorum.Quorum import Quorum
@@ -39,3 +38,4 @@ class BenchmarkScheduler:
                     print(f"Starting benchmark {name}")
                     benchmark.start()
                     print(f"Finished benchmark {name}")
+        asyncio.run(self.quorum.stop())

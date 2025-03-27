@@ -63,6 +63,7 @@ class Qemu(Virtualizer):
     async def pre_start(self, node: "Node") -> None:
         assert isinstance(node.virt_data, Qemu.QemuData)
         command = (
+            f'pgrep -Af "qemu-system.*-name quorum_{node.name}_" || '
             f"qemu-system-x86_64 -drive file={node.virt_data.qcow},format=qcow2,snapshot=on -m {node.virt_data.memory} "
             f"-smp {node.virt_data.cpus} -netdev user,id=net0,hostfwd=tcp::{node.virt_data.ssh_port}-:22"
             f",hostfwd=tcp::{node.get_conn_data().port}-:{node.get_conn_data().port},hostfwd=udp::{node.get_conn_data().port}-:{node.get_conn_data().port}"
@@ -97,7 +98,6 @@ class Qemu(Virtualizer):
 
     @override
     def get_stop_node_command(self, node: "Node") -> str:
-        command = (
-            f'pgrep -f "qemu-system.*-name quorum_{node.name}_" | xargs -r kill -SIGTERM'
-        )
+        assert isinstance(node.virt_data, Qemu.QemuData)
+        command = f"ssh -i {node.virt_data.key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p {node.virt_data.ssh_port} {node.virt_data.user}@localhost killall geth"
         return command
