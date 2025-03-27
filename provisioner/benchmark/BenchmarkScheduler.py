@@ -24,7 +24,7 @@ class BenchmarkScheduler:
         for strategy in self.strategies:
             for tx_rate in self.tx_rates:
                 for attempt in range(self.attempts):
-                    name = f"{self.name}-{strategy.get_name()}_{tx_rate}_{attempt}"
+                    name = f"{self.name}-{self.quorum.get_consensus()}-{strategy.get_name()}_{tx_rate}_{attempt}"
                     print(f"Setting up deployment {name}")
                     asyncio.run(self.quorum.restart())
                     benchmark = Benchmark(

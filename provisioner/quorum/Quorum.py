@@ -24,6 +24,9 @@ class Quorum:
         self.__contract: Contract = Contract(self.get_agents(), jsondata["contract"])
         self.__initialized = False
 
+    def get_consensus(self):
+        return self.__consensus.name
+
     def get_contract(self):
         assert self.__contract is not None
         return self.__contract
