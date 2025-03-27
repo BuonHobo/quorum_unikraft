@@ -4,11 +4,11 @@ from pathlib import Path
 import socket
 from typing import TYPE_CHECKING, Optional
 
-from provinew.utils.Utils import Runner
+from provisioner.utils.Utils import Runner
 
 if TYPE_CHECKING:
-    from provinew.quorum.node.Node import Node
-    from provinew.quorum.node.NodeData import ConnData
+    from provisioner.quorum.node.Node import Node
+    from provisioner.quorum.node.NodeData import ConnData
 
 
 class VirtData:

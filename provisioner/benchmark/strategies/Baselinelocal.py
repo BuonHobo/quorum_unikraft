@@ -3,7 +3,7 @@ from typing import override
 
 from hexbytes import HexBytes
 from web3 import AsyncWeb3
-from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
+from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from eth_account.signers.local import LocalAccount
 
 

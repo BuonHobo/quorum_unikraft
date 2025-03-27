@@ -1,6 +1,6 @@
 import json
 
-from provinew.deployment.Deployment import Experiment
+from provisioner.deployment.Deployment import Experiment
 
 with open("deployment.json") as f:
     data = json.load(f)

@@ -2,10 +2,10 @@ from multiprocessing import Process, Queue
 from pathlib import Path
 from time import sleep
 
-from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
-from provinew.benchmark.Logger import Logger
-from provinew.benchmark.workers.Worker import Worker
-from provinew.quorum.Quorum import Quorum
+from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
+from provisioner.benchmark.Logger import Logger
+from provisioner.benchmark.workers.Worker import Worker
+from provisioner.quorum.Quorum import Quorum
 
 
 class Benchmark:

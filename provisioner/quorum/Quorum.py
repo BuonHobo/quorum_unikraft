@@ -1,14 +1,14 @@
 from random import choice
-from provinew.quorum.consensus.Consensus import Consensus
+from provisioner.quorum.consensus.Consensus import Consensus
 import asyncio
 from typing import Optional
-from provinew.quorum.contract.IDSContract import Contract
-from provinew.quorum.node.Node import Node
+from provisioner.quorum.contract.IDSContract import Contract
+from provisioner.quorum.node.Node import Node
 from pathlib import Path
 import shutil
 
-from provinew.utils.Utils import Runner
-from provinew.virtualization.Virtualizer import Virtualizer
+from provisioner.utils.Utils import Runner
+from provisioner.virtualization.Virtualizer import Virtualizer
 
 
 class Quorum:

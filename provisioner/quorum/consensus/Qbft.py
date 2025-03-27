@@ -1,10 +1,10 @@
 from typing import override
-from provinew.quorum.node.Node import Node
-from provinew.quorum.consensus.Consensus import Consensus
+from provisioner.quorum.node.Node import Node
+from provisioner.quorum.consensus.Consensus import Consensus
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provinew.quorum.Quorum import Quorum
+    from provisioner.quorum.Quorum import Quorum
 
 
 class Qbft(Consensus):

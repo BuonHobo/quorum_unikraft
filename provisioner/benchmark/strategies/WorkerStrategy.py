@@ -5,10 +5,10 @@ from hexbytes import HexBytes
 from web3 import AsyncWeb3
 from typing import TYPE_CHECKING
 
-from provinew.quorum.Quorum import Quorum
+from provisioner.quorum.Quorum import Quorum
 
 if TYPE_CHECKING:
-    from provinew.benchmark.workers.Worker import Worker
+    from provisioner.benchmark.workers.Worker import Worker
 
 
 class WorkerStrategy:

@@ -5,11 +5,11 @@ from typing import override
 
 from hexbytes import HexBytes
 from web3 import AsyncWeb3, WebSocketProvider
-from provinew.benchmark.workers.Worker import Worker
-from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
+from provisioner.benchmark.workers.Worker import Worker
+from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from web3.contract import AsyncContract
 
-from provinew.quorum.Quorum import Quorum
+from provisioner.quorum.Quorum import Quorum
 
 
 class Contract(WorkerStrategy):

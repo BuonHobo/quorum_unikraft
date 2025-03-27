@@ -1,16 +1,16 @@
 from pathlib import Path
 from typing import override
 
-from provinew.quorum.node.NodeData import ConnData
-from provinew.utils.Utils import Runner
-from provinew.virtualization.Virtualizer import (
+from provisioner.quorum.node.NodeData import ConnData
+from provisioner.utils.Utils import Runner
+from provisioner.virtualization.Virtualizer import (
     VirtData,
     Virtualizer,
 )
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provinew.quorum.node.Node import Node
+    from provisioner.quorum.node.Node import Node
 
 
 class Qemu(Virtualizer):

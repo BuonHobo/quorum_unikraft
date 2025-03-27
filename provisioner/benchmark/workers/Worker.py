@@ -8,10 +8,10 @@ from web3.middleware import ExtraDataToPOAMiddleware
 from web3 import AsyncWeb3
 from typing import TYPE_CHECKING
 
-from provinew.benchmark.strategies.WorkerStrategy import WorkerStrategy
+from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 
 if TYPE_CHECKING:
-    from provinew.benchmark.Benchmark import Benchmark
+    from provisioner.benchmark.Benchmark import Benchmark
 
 
 class Worker:

@@ -1,9 +1,9 @@
 from typing import Optional
 
 
-from provinew.quorum.contract.ContractBuilder import ContractBuilder
-from provinew.quorum.contract.DeployedContract import DeployedContract
-from provinew.quorum.node.Node import Node
+from provisioner.quorum.contract.ContractBuilder import ContractBuilder
+from provisioner.quorum.contract.DeployedContract import DeployedContract
+from provisioner.quorum.node.Node import Node
 
 
 class Contract:

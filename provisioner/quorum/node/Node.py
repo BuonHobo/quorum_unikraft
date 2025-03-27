@@ -7,14 +7,14 @@ from web3 import AsyncWeb3, WebSocketProvider
 from web3.middleware import ExtraDataToPOAMiddleware
 
 
-from provinew.quorum.node.NodeData import NodeData
+from provisioner.quorum.node.NodeData import NodeData
 
 from typing import TYPE_CHECKING
 
-from provinew.utils.Utils import Runner
+from provisioner.utils.Utils import Runner
 
 if TYPE_CHECKING:
-    from provinew.virtualization.Virtualizer import Virtualizer, VirtData
+    from provisioner.virtualization.Virtualizer import Virtualizer, VirtData
 
 
 class Node:

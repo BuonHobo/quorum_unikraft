@@ -2,7 +2,7 @@ from pathlib import Path
 import solcx
 from web3 import AsyncWeb3
 
-from provinew.quorum.node.Node import Node
+from provisioner.quorum.node.Node import Node
 
 
 class ContractBuilder:

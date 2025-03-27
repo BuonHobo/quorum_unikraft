@@ -1,10 +1,10 @@
 import importlib
-from provinew.quorum.node.Node import Node
+from provisioner.quorum.node.Node import Node
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provinew.quorum.Quorum import Quorum
+    from provisioner.quorum.Quorum import Quorum
 
 
 class Consensus:

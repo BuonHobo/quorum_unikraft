@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import override
-from provinew.quorum.node.NodeData import ConnData
-from provinew.virtualization.Virtualizer import Virtualizer, VirtData
+from provisioner.quorum.node.NodeData import ConnData
+from provisioner.virtualization.Virtualizer import Virtualizer, VirtData
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provinew.quorum.node.Node import Node
+    from provisioner.quorum.node.Node import Node
 
 
 class Host(Virtualizer):
