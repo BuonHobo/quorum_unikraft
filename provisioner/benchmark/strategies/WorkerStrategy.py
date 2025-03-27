@@ -29,6 +29,6 @@ class WorkerStrategy:
     @staticmethod
     def get_strategy(jsondata: dict, quorum: Quorum) -> WorkerStrategy:
         name = str(jsondata["strategy"]).capitalize()
-        module = importlib.import_module("provinew.benchmark.strategies." + name)
+        module = importlib.import_module("provisioner.benchmark.strategies." + name)
         strategy = getattr(module, name)
         return strategy(jsondata, quorum)

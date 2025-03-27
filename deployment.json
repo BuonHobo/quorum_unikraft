@@ -39,7 +39,7 @@
                 }
             ]
         },
-        "directory": "./deployment",
+        "directory": "./.deployment",
         "toolboxContainer": "ubuntu-toolbox-24.10",
         "virtualizers": [
             {
@@ -73,7 +73,7 @@
                 "target": true,
                 "verbosity": 0,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
             },
             {
@@ -83,7 +83,7 @@
                 "agent": true,
                 "target": true,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
             }
         ]

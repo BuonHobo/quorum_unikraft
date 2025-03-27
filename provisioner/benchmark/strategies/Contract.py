@@ -21,7 +21,7 @@ class Contract(WorkerStrategy):
     ) -> None:
         self.quorum = quorum
         self.size = jsondata["tx_size"]
-        self.parameters = quorum.contract.get_parameters()
+        self.parameters = quorum.get_contract().get_parameters()
         self.contract: AsyncContract = None  # type: ignore
         self.connector_to_contract: dict[AsyncWeb3, AsyncContract] = None  # type: ignore
         self.lock: Lock = Lock()  # type: ignore
@@ -51,8 +51,8 @@ class Contract(WorkerStrategy):
     async def prepare_worker(self, worker: Worker):
         self.connector_to_contract = { # type: ignore
             connector: connector.eth.contract(
-                address=self.quorum.contract.get_address(),  # type: ignore
-                abi=self.quorum.contract.get_abi(),  # type: ignore
+                address=self.quorum.get_contract().get_address(),  # type: ignore
+                abi=self.quorum.get_contract().get_abi(),  # type: ignore
             )
             for connector in worker.connectors
         }

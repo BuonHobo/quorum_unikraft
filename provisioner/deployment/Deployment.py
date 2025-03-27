@@ -22,8 +22,19 @@ class Experiment:
         print("Contract deployed")
         await asyncio.sleep(1)
 
+    async def restart_quorum(self) -> None:
+        print("Restarting quorum")
+        await self.quorum.restart()
+        print("Quorum restarted")
+        await asyncio.sleep(1)
+        print("Deploying contract")
+        await self.quorum.deploy_contract()
+        print("Contract deployed")
+        await asyncio.sleep(1)
+
     def run(self) -> None:
         asyncio.run(self.start_quorum())
+        asyncio.run(self.restart_quorum())
         print("Starting benchmark")
         self.benchmark.start()
         print("Benchmark finished")

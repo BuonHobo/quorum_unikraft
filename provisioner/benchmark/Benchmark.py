@@ -37,7 +37,7 @@ class Benchmark:
         self.strategy.prepare_strategy()
         log_queue = Queue()
         logger = Process(
-            target=Logger(self, log_queue).run,
+            target=Logger(self.output_file, log_queue).run,
         )
         logger.start()
 

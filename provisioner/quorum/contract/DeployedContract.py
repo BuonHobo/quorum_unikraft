@@ -10,21 +10,12 @@ class DeployedContract:
         self.agents = agents
         self.numagents4params = numagents4params
 
-    async def propose(self, node, keys, values):
-        await self.transact(node, "proposeNewValues", [keys, values])
-
-    async def populate(self, node, states, actions):
-        await self.transact(node, "insertMap", [states, actions])
-
-    async def get(self, node, key):
-        return await self.call(node, "statusMapDT", [key])
-
-    async def subscribe(self, node, callback):
+    async def subscribe(self, node, event_name, callback):
         async with await node.connect() as w3:
             contractInstance: AsyncContract = w3.eth.contract(
                 address=self.address, abi=self.abi
             )
-            filter = await contractInstance.events.ActionRequired.create_filter(
+            filter = await contractInstance.events[event_name].create_filter(
                 from_block="latest"
             )
 
@@ -37,7 +28,8 @@ class DeployedContract:
         async with await node.connect() as w3:
             contractInstance = w3.eth.contract(address=self.address, abi=self.abi)
             tx_hash = await contractInstance.functions[method](*args).transact()
-            _tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
+            tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
+            return tx_receipt
 
     async def call(self, node, method, args):
         async with await node.connect() as w3:

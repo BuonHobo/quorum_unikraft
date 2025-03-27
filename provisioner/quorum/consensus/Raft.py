@@ -36,7 +36,6 @@ class Raft(Consensus):
         )
 
     def get_consensus_options(self, node: Node, joinexisting: str = ""):
-        assert node.data is not None
         options = (
             "--raft "
             f"--raftport {node.get_conn_data().raft_port} "

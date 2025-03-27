@@ -15,4 +15,4 @@ class Runner:
         p = await asyncio.create_subprocess_shell(
             command, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL
         )
-        await p.wait()
+        return await p.wait()

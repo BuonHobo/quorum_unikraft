@@ -70,3 +70,7 @@ class Unitest(Virtualizer):
     @override
     def get_mapped_dir(self, node: "Node") -> Path:
         return Path("/node")
+
+    @override
+    def get_stop_node_command(self, node: "Node") -> str:
+        return f"kraft rm {node.name}"

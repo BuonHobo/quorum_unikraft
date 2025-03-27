@@ -47,3 +47,10 @@ class Host(Virtualizer):
     @override
     def get_mapped_dir(self, node: "Node") -> Path:
         return node.get_dir()
+    
+    @override
+    def get_stop_node_command(self, node: "Node") -> str:
+        command = (
+            f'pgrep -f "nohup geth * &> {node.get_dir().joinpath("output.txt")} &" | xargs -r kill -SIGTERM'
+        )
+        return command

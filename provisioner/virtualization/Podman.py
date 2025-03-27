@@ -74,3 +74,8 @@ class Podman(Virtualizer):
     @override
     def get_mapped_dir(self, node: "Node") -> Path:
         return Path("/node")
+
+    @override
+    def get_stop_node_command(self, node: "Node") -> str:
+        command = f"podman rm --force {node.name}"
+        return command

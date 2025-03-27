@@ -1,26 +1,23 @@
 from multiprocessing import Queue
+from pathlib import Path
 import signal
 from time import time
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from benchmark.Benchmark import Benchmark
 
 
 class Logger:
     def __init__(
         self,
-        benchmark: "Benchmark",
+        benchmark: "Path",
         log_queue: Queue,
     ) -> None:
-        self.benchmark = benchmark
+        self.output_file = benchmark
         self.log_queue = log_queue
 
     def run(self):
         start_time = time()
         signal.signal(signal.SIGTERM, handler=lambda x, y: exit(0))
         id = 0
-        with self.benchmark.output_file.open("w") as f:
+        with self.output_file.open("w") as f:
             f.write("id,pid,host,nonce,sent_time,time_to_send,time_to_rcpt,recv_time\n")
             while True:
                 pid, host, nonce, start, send, rcpt = self.log_queue.get()

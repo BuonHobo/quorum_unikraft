@@ -22,6 +22,9 @@ class Virtualizer:
 
     def get_stop_command(self) -> str:
         raise NotImplementedError("This method must be implemented by the subclass")
+    
+    def get_stop_node_command(self, node: "Node") -> str:
+        raise NotImplementedError("This method must be implemented by the subclass")
 
     async def pre_start(self, node: "Node"):
         raise NotImplementedError("This method must be implemented by the subclass")
@@ -57,6 +60,10 @@ class Virtualizer:
         self.nodes.append(node)
         return self.handle_node(node, jsondata)
 
+    async def stop_node(self, node: "Node"):
+        cmd = self.get_stop_node_command(node)
+        await Runner.run(cmd)
+
     async def stop(self):
         cmd = self.get_stop_command()
         await Runner.run(cmd)
@@ -79,6 +86,6 @@ class Virtualizer:
     @staticmethod
     def get_virtualizer(jsondata: dict):
         name = str(jsondata["name"]).capitalize()
-        module = importlib.import_module("provinew.virtualization." + name)
+        module = importlib.import_module("provisioner.virtualization." + name)
         virtualizer = getattr(module, name)
         return jsondata["name"], virtualizer(jsondata)

@@ -20,6 +20,6 @@ class Consensus:
     @staticmethod
     def get_consensus(jsondata: dict):
         name = str(jsondata["consensus"]).capitalize()
-        module = importlib.import_module("provinew.quorum.consensus." + name)
+        module = importlib.import_module("provisioner.quorum.consensus." + name)
         consensus = getattr(module, name)
         return consensus(jsondata)

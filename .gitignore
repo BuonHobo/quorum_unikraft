@@ -4,10 +4,9 @@ build/bootc/manifest-qcow2.json
 build/bootc/qcow2/disk.qcow2
 .vscode
 .venv
+.deployment
 __pycache__
 package-lock.json
 node_modules
 irs-blockchain
-deployment
-!provisioner/deployment
 data*

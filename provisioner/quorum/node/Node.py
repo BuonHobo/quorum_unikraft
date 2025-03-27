@@ -31,6 +31,7 @@ class Node:
         self.role: str = jsondata["role"]
         self.agent: bool = jsondata.get("agent", False)
         self.target: bool = jsondata.get("target", False)
+        self.syncmode: str = jsondata.get("syncmode", "full")
 
         self.id: int = Node.nodes
         Node.nodes += 1
@@ -40,64 +41,68 @@ class Node:
         self.virt_data: "VirtData" = virtualizers[
             jsondata["virtualizer"]["name"]
         ].add_node(self, jsondata["virtualizer"])
-        self.data: Optional[NodeData] = None
+        self.__data: Optional[NodeData] = None
 
     async def start(self, consensus_options: str) -> None:
         await self.virt_data.virtualizer.start(
             self, self.get_options() + " " + consensus_options
         )
 
+    async def stop(self) -> None:
+        await self.virt_data.virtualizer.stop_node(self)
+
     async def send(self, to_node: Self, value: int) -> None:
         async with await self.connect() as w3:
             tx_hash = await w3.eth.send_transaction(
                 {"to": to_node.get_checksum_address(), "value": value}
             )
-            _tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
+            tx_receipt = await w3.eth.wait_for_transaction_receipt(tx_hash)
+            return tx_receipt
 
     async def connect(self):
-        assert self.data is not None
+        assert self.__data is not None
         w3: AsyncWeb3 = await AsyncWeb3(
-            WebSocketProvider(self.data.connection_data.get_ws_url())
+            WebSocketProvider(self.__data.connection_data.get_ws_url())
         )
         w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         w3.eth.default_account = self.get_checksum_address()
         return w3
 
     def get_conn_data(self):
-        assert self.data is not None
-        return self.data.connection_data
+        assert self.__data is not None
+        return self.__data.connection_data
 
     def get_dir(self):
-        assert self.data is not None
-        return self.data.dir
+        assert self.__data is not None
+        return self.__data.dir
 
     def get_checksum_address(self):
-        assert self.data is not None
-        return AsyncWeb3.to_checksum_address("0x" + self.data.address)
+        assert self.__data is not None
+        return AsyncWeb3.to_checksum_address("0x" + self.__data.address)
 
     def get_address(self):
-        assert self.data is not None
-        return self.data.address
+        assert self.__data is not None
+        return self.__data.address
 
     def get_options(self):
-        assert self.data is not None
+        assert self.__data is not None
         mapped_dir = self.virt_data.virtualizer.get_mapped_dir(self)
         options = (
             f"--datadir {mapped_dir.joinpath('data').as_posix()} "
             f"--networkid 1234 "
             f"--nodiscover "
             f"--verbosity {self.verbosity} "
-            f"--ws "
+            f"--ws "  # TODO: Might add http as an alternative to ws
             f"--ws.addr 0.0.0.0 "
-            f"--ws.port {self.data.connection_data.ws_port} "
+            f"--ws.port {self.__data.connection_data.ws_port} "
             f"--ws.origins '*' "
             f"--ws.api admin,eth,debug,miner,net,txpool,personal,web3,raft,istanbul "
-            f"--syncmode full "
+            f"--syncmode {self.syncmode} "
             f"--nousb "
-            f"--unlock {self.data.address} "
+            f"--unlock {self.__data.address} "
             f"--allow-insecure-unlock "
             f"--password {mapped_dir.joinpath('data/keystore/accountPassword').as_posix()} "
-            f"--port {self.data.connection_data.port} "
+            f"--port {self.__data.connection_data.port} "
         )
         return options
 
@@ -109,14 +114,19 @@ class Node:
         for node in static_nodes:
             enodes.append(node.get_enode_url())
 
-        assert self.data is not None
-        self.data.dir.joinpath("data/permissioned-nodes.json").write_text(
+        assert self.__data is not None
+        self.__data.dir.joinpath("data/permissioned-nodes.json").write_text(
             json.dumps(enodes)
         )
-        self.data.dir.joinpath("data/static-nodes.json").write_text(json.dumps(enodes))
-        await Runner.run(
-            f"geth --datadir {self.data.dir.joinpath('data')} init {self.data.dir.joinpath('data/genesis.json')}"
+        self.__data.dir.joinpath("data/static-nodes.json").write_text(
+            json.dumps(enodes)
         )
+        await Runner.run(
+            f"geth --datadir {self.__data.dir.joinpath('data')} init {self.__data.dir.joinpath('data/genesis.json')}"
+        )
+
+    def discard(self):
+        self.__data = None
 
     def initialize(
         self,
@@ -142,18 +152,18 @@ class Node:
             shutil.copy(role_dir.joinpath(f), keystore.joinpath(f))
 
         conn_data = self.virt_data.virtualizer.get_conn_data(self)
-        self.data = NodeData(
+        self.__data = NodeData(
             address=keystore.joinpath("accountAddress").read_text().removeprefix("0x"),
             connection_data=conn_data,
             dir=node_dir,
             enode_hash=node_dir.joinpath("data/nodekey.pub").read_text().strip(),
         )
 
-        self.data.dir.joinpath("wsurl").write_text(
-            self.data.connection_data.get_ws_url()
+        self.__data.dir.joinpath("wsurl").write_text(
+            self.__data.connection_data.get_ws_url()
         )
-        self.data.dir.joinpath("enode").write_text(self.data.get_enode_url())
+        self.__data.dir.joinpath("enode").write_text(self.__data.get_enode_url())
 
     def get_enode_url(self):
-        assert self.data is not None
-        return self.data.get_enode_url()
+        assert self.__data is not None
+        return self.__data.get_enode_url()
