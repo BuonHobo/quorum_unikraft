@@ -8,7 +8,7 @@
             120
         ],
         "duration": 30,
-        "output_directory": "./datatest",
+        "output_directory": "./data",
         "timeout": 30,
         "strategies": [
             {
