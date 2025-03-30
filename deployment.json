@@ -2,9 +2,11 @@
     "benchmark": {
         "name": "quorum",
         "tx_rates": [
-            100
+            100,
+            150,
+            200
         ],
-        "duration": 30,
+        "duration": 40,
         "output_directory": "./data",
         "timeout": 30,
         "strategies": [
@@ -26,9 +28,29 @@
             "version": "0.8.19",
             "params": 5,
             "numagents4params": 1,
-            "extra_agents": [],
-            "events": {},
-            "exec": []
+            "extra_agents": [
+                "0x2f6b58c01b28d5836cec6a38ee7cb00e758f500f",
+                "0xc3b2b2d0dbef9b4c668656df9a97fc508e0bda2f"
+            ],
+            "events": {
+                "01101": "sendAlert",
+                "00000": "allQuiet"
+            },
+            "exec": [
+                {
+                    "method": "proposeNewValues",
+                    "args": [
+                        [
+                            "P_0",
+                            "P_2"
+                        ],
+                        [
+                            1,
+                            1
+                        ]
+                    ]
+                }
+            ]
         },
         "directory": "./.deployment",
         "toolboxContainer": "ubuntu-toolbox-24.10",
@@ -64,7 +86,8 @@
                 "target": true,
                 "verbosity": 0,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "podman",
+                    "cpus": 2
                 }
             },
             {
@@ -72,9 +95,18 @@
                 "role": "validator",
                 "verbosity": 0,
                 "agent": true,
+                "virtualizer": {
+                    "name": "unitest"
+                }
+            },
+            {
+                "name": "node3",
+                "role": "member",
+                "verbosity": 2,
                 "target": true,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "qemu",
+                    "memory": "512M"
                 }
             }
         ]

@@ -9,12 +9,12 @@ if TYPE_CHECKING:
 
 class Qbft(Consensus):
     @override
-    def get_static_nodes(self, quorum: "Quorum"):
-        return quorum.__nodes
+    def get_static_nodes(self, nodes: list[Node]):
+        return nodes
 
     @override
     async def start(self, quorum: "Quorum"):
-        for node in quorum.__nodes:
+        for node in quorum.get_nodes():
             await node.start(self.get_consensus_options(node))
 
     def get_consensus_options(self, node: Node):

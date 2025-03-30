@@ -11,7 +11,7 @@ class Consensus:
     async def start(self, quorum: "Quorum"):
         raise NotImplementedError("This method must be implemented by the subclass")
 
-    def get_static_nodes(self, quorum: "Quorum") -> list[Node]:
+    def get_static_nodes(self, nodes: list[Node]) -> list[Node]:
         raise NotImplementedError("This method must be implemented by the subclass")
 
     def __init__(self, jsondata: dict):

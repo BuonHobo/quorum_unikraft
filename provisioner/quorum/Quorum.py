@@ -31,6 +31,9 @@ class Quorum:
         assert self.__contract is not None
         return self.__contract
 
+    def get_nodes(self):
+        return self.__nodes
+
     def get_agents(self):
         return [node for node in self.__nodes if node.agent]
 
@@ -91,7 +94,7 @@ class Quorum:
 
         coros = []
         for node in self.__nodes:
-            coro = node.initialize_geth(self.__consensus.get_static_nodes(self))
+            coro = node.initialize_geth(self.__consensus.get_static_nodes(self.__nodes))
             coros.append(coro)
         await asyncio.gather(*coros)
 

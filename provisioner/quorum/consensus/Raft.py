@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 
 class Raft(Consensus):
     @override
-    def get_static_nodes(self, quorum: "Quorum"):
-        return quorum.get_validators()
+    def get_static_nodes(self, nodes: list[Node]):
+        return [node for node in nodes if node.role == "validator"]
 
     @override
     async def start(self, quorum: "Quorum"):
@@ -37,9 +37,7 @@ class Raft(Consensus):
 
     def get_consensus_options(self, node: Node, joinexisting: str = ""):
         options = (
-            "--raft "
-            f"--raftport {node.get_conn_data().raft_port} "
-            "--raftblocktime 1000"
+            f"--raft --raftport {node.get_conn_data().raft_port} --raftblocktime 1000"
         )
         if node.role == "member":
             options += f" --raftjoinexisting {joinexisting}"
