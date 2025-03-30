@@ -1,30 +1,35 @@
 {
     "benchmark": {
-        "name": "quorum",
+        "name": "podman",
         "tx_rates": [
-            100
+            50,
+            100,
+            150,
+            200,
+            250,
+            300
         ],
-        "duration": 30,
+        "duration": 40,
         "output_directory": "./data",
-        "timeout": 30,
+        "timeout": 20,
         "strategies": [
             {
                 "name": "contract",
-                "tx_size": 2
+                "tx_size": 1
             },
             {
                 "name": "baseline"
             }
         ],
         "processes": 3,
-        "attempts": 5
+        "attempts": 3
     },
     "quorum": {
         "consensus": "raft",
         "contract": {
             "path": "contracts/IDS.sol",
             "version": "0.8.19",
-            "params": 5,
+            "params": 10,
             "numagents4params": 1,
             "extra_agents": [],
             "events": {},
@@ -64,7 +69,7 @@
                 "target": true,
                 "verbosity": 0,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "podman"
                 }
             },
             {
@@ -74,7 +79,17 @@
                 "agent": true,
                 "target": true,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "podman"
+                }
+            },
+            {
+                "name": "node3",
+                "role": "validator",
+                "verbosity": 0,
+                "agent": true,
+                "target": true,
+                "virtualizer": {
+                    "name": "podman"
                 }
             }
         ]

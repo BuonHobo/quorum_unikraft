@@ -63,7 +63,7 @@ class Quorum:
     async def start(self):
         await self.__consensus.start(self)
         await asyncio.sleep(3)
-        await self.deploy_contract()
+        return await self.deploy_contract()
 
     async def make_artifacts(self):
         output_path = self.__directory.joinpath("artifacts_tmp")
@@ -116,6 +116,7 @@ class Quorum:
             await self.remove_nodes()
             await self.initialize_nodes(self.__directory.joinpath("artifacts"))
         await self.start()
+        await asyncio.sleep(5)
 
     async def genesis(self, output_path):
         command = ""
