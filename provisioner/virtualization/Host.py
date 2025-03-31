@@ -51,6 +51,6 @@ class Host(Virtualizer):
     @override
     def get_stop_node_command(self, node: "Node") -> str:
         command = (
-            f'pgrep -f "nohup geth * &> {node.get_dir().joinpath("output.txt")} &" | xargs -r kill -SIGTERM'
+            f'pgrep -f "{node.get_dir()}" | xargs -r kill -SIGTERM'
         )
         return command
