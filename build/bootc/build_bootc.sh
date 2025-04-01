@@ -15,4 +15,4 @@ sudo podman run \
     --type qcow2 \
     --rootfs xfs \
 	--use-librepo=True \
-    buonhobo/quorum-bootc:latest
+    localhost/buonhobo/quorum-bootc:latest
