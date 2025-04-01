@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ensure the image is fetched
-sudo podman build ./build/bootc -t buonhobo/quorum-bootc:latest
+sudo podman build ./build/bootc -t buonhobo/quorum-bootc:latest --net host
 sudo podman run \
     --rm \
     -it \
