@@ -45,7 +45,8 @@ class Unitest(Virtualizer):
     def get_start_command(self, node: "Node", options: str):
         assert isinstance(node.virt_data, Unitest.UnitestData)
         command = (
-            f"kraft run -d --rm "
+            f"nohup " 
+            f"kraft run --rm "
             f"--name {node.name} "
             f"-p {node.get_conn_data().port}:{node.get_conn_data().port} "
             f"-p {node.get_conn_data().raft_port}:{node.get_conn_data().raft_port} "
@@ -53,7 +54,8 @@ class Unitest(Virtualizer):
             f"-v {node.get_dir()}:/node "
             f"-M {node.virt_data.memory} "
             f"{node.virt_data.image} -- /geth "
-            f"{options}"
+            f"{options} "
+            f"&> {node.get_dir().joinpath('output.txt')} &"
         )
         return command
 

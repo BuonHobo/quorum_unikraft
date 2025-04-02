@@ -50,7 +50,8 @@ class Podman(Virtualizer):
     def get_start_command(self, node: "Node", options: str):
         assert isinstance(node.virt_data, Podman.PodmanData)
         command = (
-            f"podman run -d --rm --replace "
+            f"nohup "
+            f"podman run --rm --replace "
             f"--name {node.name} "
             f"--label quorum=true "
             f"--cpus {node.virt_data.cpus} "
@@ -58,7 +59,8 @@ class Podman(Virtualizer):
             f"--net host "
             f"-v {node.get_dir()}:/node:Z "
             f"{node.virt_data.image} "
-            f"{options}"
+            f"{options} "
+            f"&> {node.get_dir().joinpath('output.txt')} &"
         )
         return command
 

@@ -98,16 +98,6 @@
                 "virtualizer": {
                     "name": "unitest"
                 }
-            },
-            {
-                "name": "node3",
-                "role": "member",
-                "verbosity": 2,
-                "target": true,
-                "virtualizer": {
-                    "name": "qemu",
-                    "memory": "512M"
-                }
             }
         ]
     }
