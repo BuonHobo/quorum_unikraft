@@ -38,4 +38,4 @@ class BenchmarkScheduler:
                     print(f"Starting benchmark {name}")
                     benchmark.start()
                     print(f"Finished benchmark {name}")
-        asyncio.run(self.quorum.stop())
+        # asyncio.run(self.quorum.stop())

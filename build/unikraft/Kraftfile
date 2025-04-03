@@ -2,14 +2,14 @@ spec: v0.6
 
 template:
   source: https://github.com/unikraft/app-elfloader.git
-  version: staging
+  version: stable
 
 rootfs: ./Dockerfile
 
 cmd: ["/fallback"]
 
 unikraft:
-  version: staging
+  version: stable
   kconfig:
     # Configurations options for app-elfloader
     # (they can't be part of the template atm)
@@ -85,7 +85,7 @@ unikraft:
     CONFIG_LIBUKDEBUG: 'y'
     CONFIG_LIBUKFALLOC: 'y'
     CONFIG_LIBUKMPI: 'n'
-    CONFIG_LIBUKSIGNAL: 'y'
+    CONFIG_LIBPOSIX_PROCESS_SIGNAL: 'y'
     CONFIG_LIBUKRANDOM_DEVFS: 'y'
     CONFIG_LIBUKRANDOM: 'y'
     CONFIG_LIBUKRANDOM_GETRANDOM: 'y'
@@ -123,13 +123,12 @@ unikraft:
 
     CONFIG_LIBPOSIX_TTY_STDIO: 'y'
     CONFIG_LIBNOLIBC_FD_SETSIZE: 1024
-    CONFIG_LWIP_NUM_TCPCON: 1024
     CONFIG_LIBPOSIX_FDTAB_MAXFDS: 1024
     
 libraries:
   lwip:
     source: https://github.com/unikraft/lib-lwip.git
-    version: staging
+    version: stable
     kconfig:
       CONFIG_LWIP_LOOPIF: 'y'
       CONFIG_LWIP_UKNETDEV: 'y'
@@ -154,7 +153,7 @@ libraries:
       CONFIG_LWIP_ICMP: 'y'
   libelf:
     source: https://github.com/unikraft/lib-libelf.git
-    version: staging
+    version: stable
 
 targets:
 - qemu/x86_64
