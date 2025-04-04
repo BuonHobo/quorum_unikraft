@@ -122,8 +122,8 @@ unikraft:
     # CONFIG_LIBSYSCALL_SHIM_DEBUG: 'y'
 
     CONFIG_LIBPOSIX_TTY_STDIO: 'y'
-    CONFIG_LIBNOLIBC_FD_SETSIZE: 1024
-    CONFIG_LIBPOSIX_FDTAB_MAXFDS: 1024
+    CONFIG_LIBNOLIBC_FD_SETSIZE: 16384
+    CONFIG_LIBPOSIX_FDTAB_MAXFDS: 16384
     
 libraries:
   lwip:
@@ -148,8 +148,8 @@ libraries:
       # Lwip's DNS support is not used for bin compat programs (elfloader)
       # HINT: Native builds with musl should set CONFIG_LIBMUSL_NETWORK_LWIP_DNS together with CONFIG_LWIP_DNS
       CONFIG_LWIP_DNS: 'n'
-      CONFIG_LWIP_NUM_TCPCON: 1024
-      CONFIG_LWIP_NUM_TCPLISTENERS: 1024
+      CONFIG_LWIP_NUM_TCPCON: 16384
+      CONFIG_LWIP_NUM_TCPLISTENERS: 16384
       CONFIG_LWIP_ICMP: 'y'
   libelf:
     source: https://github.com/unikraft/lib-libelf.git

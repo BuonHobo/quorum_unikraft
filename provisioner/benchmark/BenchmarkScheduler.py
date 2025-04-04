@@ -1,4 +1,5 @@
 import asyncio
+import importlib
 from pathlib import Path
 from provisioner.benchmark.Benchmark import Benchmark
 from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
@@ -15,6 +16,7 @@ class BenchmarkScheduler:
         self.timeout = jsondata["timeout"]
         self.processes = jsondata["processes"]
         self.attempts = jsondata["attempts"]
+        self.worker = self.get_worker_type(jsondata)
         self.strategies = [
             WorkerStrategy.get_strategy(data, quorum) for data in jsondata["strategies"]
         ]
@@ -34,8 +36,16 @@ class BenchmarkScheduler:
                         rps=tx_rate,
                         strategy=strategy,
                         targets=self.quorum.get_targets(),
+                        worker=self.worker,
                     )
                     print(f"Starting benchmark {name}")
                     benchmark.start()
                     print(f"Finished benchmark {name}")
         # asyncio.run(self.quorum.stop())
+
+    @staticmethod
+    def get_worker_type(jsondata: dict):
+        name = str(jsondata["worker"]).capitalize()
+        module = importlib.import_module("provisioner.benchmark.workers." + name)
+        worker_type = getattr(module, name)
+        return worker_type

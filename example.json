@@ -2,9 +2,7 @@
     "benchmark": {
         "name": "quorum",
         "tx_rates": [
-            100,
-            150,
-            200
+            130
         ],
         "duration": 40,
         "output_directory": "./data",
@@ -13,13 +11,11 @@
             {
                 "name": "contract",
                 "tx_size": 2
-            },
-            {
-                "name": "baseline"
             }
         ],
         "processes": 3,
-        "attempts": 5
+        "attempts": 1,
+        "worker": "simpleworker"
     },
     "quorum": {
         "consensus": "raft",
@@ -84,19 +80,81 @@
                 "role": "validator",
                 "agent": true,
                 "target": true,
-                "verbosity": 0,
+                "verbosity": 3,
                 "virtualizer": {
-                    "name": "podman",
-                    "cpus": 2
+                    "name": "podman"
                 }
-            },
-            {
+            },{
                 "name": "node2",
                 "role": "validator",
-                "verbosity": 0,
                 "agent": true,
+                "target": true,
+                "verbosity": 3,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
+                }
+            },{
+                "name": "node3",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node4",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node5",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node6",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node7",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node8",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
+                }
+            },{
+                "name": "node9",
+                "role": "validator",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "podman"
                 }
             }
         ]

@@ -4,6 +4,7 @@ from time import sleep
 
 from provisioner.benchmark.strategies.WorkerStrategy import WorkerStrategy
 from provisioner.benchmark.Logger import Logger
+from provisioner.benchmark.workers.Simpleworker import Simpleworker
 from provisioner.benchmark.workers.Worker import Worker
 from provisioner.quorum.node.Node import Node
 
@@ -18,7 +19,7 @@ class Benchmark:
         output_file: Path,
         duration: int,
         rps: int,
-        worker: type[Worker] = Worker,
+        worker: type[Worker] = Simpleworker,
     ) -> None:
         self.rps = rps
         self.duration = duration
