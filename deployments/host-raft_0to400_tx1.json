@@ -2,11 +2,16 @@
     "benchmark": {
         "name": "host",
         "tx_rates": [
-            100,200,300,400
+            50,
+            100,
+            150,
+            200,
+            250,
+            300
         ],
-        "duration": 40,
+        "duration": 30,
         "output_directory": "./data/host",
-        "timeout": 30,
+        "timeout": 20,
         "strategies": [
             {
                 "name": "contract",
@@ -59,6 +64,8 @@
                 "name": "val1",
                 "role": "validator",
                 "verbosity": 3,
+                "agent": true,
+                "target": true,
                 "virtualizer": {
                     "name": "host"
                 }
@@ -67,6 +74,8 @@
                 "name": "val2",
                 "role": "validator",
                 "verbosity": 3,
+                "agent": true,
+                "target": true,
                 "virtualizer": {
                     "name": "host"
                 }
@@ -75,26 +84,8 @@
                 "name": "val3",
                 "role": "validator",
                 "verbosity": 3,
-                "virtualizer": {
-                    "name": "host"
-                }
-            },
-            {
-                "name": "mem4",
-                "role": "member",
                 "agent": true,
                 "target": true,
-                "verbosity": 3,
-                "virtualizer": {
-                    "name": "host"
-                }
-            },
-            {
-                "name": "mem5",
-                "role": "member",
-                "agent": true,
-                "target": true,
-                "verbosity": 3,
                 "virtualizer": {
                     "name": "host"
                 }

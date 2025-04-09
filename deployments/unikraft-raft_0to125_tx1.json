@@ -2,11 +2,13 @@
     "benchmark": {
         "name": "unikraft",
         "tx_rates": [
-            75,100,125,150
+            50,75,
+            100,125,
+            150
         ],
-        "duration": 40,
+        "duration": 30,
         "output_directory": "./data/unikraft",
-        "timeout": 30,
+        "timeout": 20,
         "strategies": [
             {
                 "name": "contract",
@@ -59,6 +61,8 @@
                 "name": "val1",
                 "role": "validator",
                 "verbosity": 3,
+                "agent": true,
+                "target": true,
                 "virtualizer": {
                     "name": "unitest"
                 }
@@ -67,6 +71,8 @@
                 "name": "val2",
                 "role": "validator",
                 "verbosity": 3,
+                "agent": true,
+                "target": true,
                 "virtualizer": {
                     "name": "unitest"
                 }
@@ -75,26 +81,8 @@
                 "name": "val3",
                 "role": "validator",
                 "verbosity": 3,
-                "virtualizer": {
-                    "name": "unitest"
-                }
-            },
-            {
-                "name": "mem4",
-                "role": "member",
                 "agent": true,
                 "target": true,
-                "verbosity": 3,
-                "virtualizer": {
-                    "name": "unitest"
-                }
-            },
-            {
-                "name": "mem5",
-                "role": "member",
-                "agent": true,
-                "target": true,
-                "verbosity": 3,
                 "virtualizer": {
                     "name": "unitest"
                 }
