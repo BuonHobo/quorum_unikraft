@@ -53,7 +53,7 @@ class Quorum:
         return [node for node in self.__nodes if node.role == "member"]
 
     async def deploy_contract(self):
-        await self.__contract.deploy_using_node(choice(self.__nodes))
+        return await self.__contract.deploy_using_node(choice(self.__nodes))
 
     async def stop(self):
         for virtualizer in self.__virtualizers:
@@ -65,7 +65,7 @@ class Quorum:
 
     async def start(self):
         await self.__consensus.start(self)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         return await self.deploy_contract()
 
     async def make_artifacts(self):
@@ -118,6 +118,7 @@ class Quorum:
             await self.stop_nodes()
             await self.remove_nodes()
             await self.initialize_nodes(self.__directory.joinpath("artifacts"))
+        await asyncio.sleep(5)
         await self.start()
         await asyncio.sleep(5)
 

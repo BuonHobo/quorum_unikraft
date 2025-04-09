@@ -60,7 +60,7 @@
                 "role": "validator",
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unikraft"
+                    "name": "unitest"
                 }
             },
             {
@@ -68,7 +68,7 @@
                 "role": "validator",
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unikraft"
+                    "name": "unitest"
                 }
             },
             {
@@ -76,7 +76,7 @@
                 "role": "validator",
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unikraft"
+                    "name": "unitest"
                 }
             },
             {
@@ -86,7 +86,7 @@
                 "target": true,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unikraft"
+                    "name": "unitest"
                 }
             },
             {
@@ -96,7 +96,7 @@
                 "target": true,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unikraft"
+                    "name": "unitest"
                 }
             }
         ]
