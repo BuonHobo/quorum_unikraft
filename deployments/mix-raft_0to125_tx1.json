@@ -1,20 +1,23 @@
 {
     "benchmark": {
-        "name": "quorum",
+        "name": "mix",
         "tx_rates": [
-            50
+            75,100,125,150
         ],
-        "duration": 120,
-        "output_directory": "./data",
+        "duration": 40,
+        "output_directory": "./data/mix",
         "timeout": 30,
         "strategies": [
             {
                 "name": "contract",
-                "tx_size": 2
+                "tx_size": 1
+            },
+            {
+                "name": "baseline"
             }
         ],
         "processes": 5,
-        "attempts": 1,
+        "attempts": 3,
         "worker": "worker"
     },
     "quorum": {
@@ -23,7 +26,7 @@
             "path": "contracts/IDS.sol",
             "version": "0.8.19",
             "params": 5,
-            "numagents4params": 1
+            "numagents4params": 2
         },
         "directory": "./.deployment",
         "toolboxContainer": "ubuntu-toolbox-24.10",
@@ -53,49 +56,47 @@
         ],
         "nodes": [
             {
-                "name": "node1",
+                "name": "val1",
                 "role": "validator",
-                "agent": false,
-                "target": false,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
-            },{
-                "name": "node2",
+            },
+            {
+                "name": "val2",
                 "role": "validator",
-                "agent": false,
-                "target": false,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
-            },{
-                "name": "node3",
+            },
+            {
+                "name": "val3",
                 "role": "validator",
-                "agent": false,
-                "target": false,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "unitest"
+                    "name": "podman"
                 }
-            },{
-                "name": "node4",
+            },
+            {
+                "name": "mem4",
                 "role": "member",
                 "agent": true,
                 "target": true,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "podman"
+                    "name": "unikraft"
                 }
-            },{
-                "name": "node5",
+            },
+            {
+                "name": "mem5",
                 "role": "member",
                 "agent": true,
                 "target": true,
                 "verbosity": 3,
                 "virtualizer": {
-                    "name": "podman"
+                    "name": "unikraft"
                 }
             }
         ]

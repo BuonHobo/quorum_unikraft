@@ -1,17 +1,12 @@
 {
     "benchmark": {
-        "name": "host",
+        "name": "qemu",
         "tx_rates": [
-            50,
-            100,
-            150,
-            200,
-            250,
-            300
+            100,200,300,400
         ],
         "duration": 40,
-        "output_directory": "./data",
-        "timeout": 20,
+        "output_directory": "./data/qemu",
+        "timeout": 30,
         "strategies": [
             {
                 "name": "contract",
@@ -21,19 +16,17 @@
                 "name": "baseline"
             }
         ],
-        "processes": 3,
-        "attempts": 3
+        "processes": 5,
+        "attempts": 3,
+        "worker": "worker"
     },
     "quorum": {
-        "consensus": "raft",
+        "consensus": "qbft",
         "contract": {
             "path": "contracts/IDS.sol",
             "version": "0.8.19",
-            "params": 10,
-            "numagents4params": 1,
-            "extra_agents": [],
-            "events": {},
-            "exec": []
+            "params": 5,
+            "numagents4params": 2
         },
         "directory": "./.deployment",
         "toolboxContainer": "ubuntu-toolbox-24.10",
@@ -63,33 +56,47 @@
         ],
         "nodes": [
             {
-                "name": "node1",
+                "name": "val1",
                 "role": "validator",
-                "agent": true,
-                "target": true,
-                "verbosity": 0,
+                "verbosity": 3,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "qemu"
                 }
             },
             {
-                "name": "node2",
+                "name": "val2",
                 "role": "validator",
-                "verbosity": 0,
-                "agent": true,
-                "target": true,
+                "verbosity": 3,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "qemu"
                 }
             },
             {
-                "name": "node3",
+                "name": "val3",
                 "role": "validator",
-                "verbosity": 0,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "qemu"
+                }
+            },
+            {
+                "name": "mem4",
+                "role": "member",
                 "agent": true,
                 "target": true,
+                "verbosity": 3,
                 "virtualizer": {
-                    "name": "host"
+                    "name": "qemu"
+                }
+            },
+            {
+                "name": "mem5",
+                "role": "member",
+                "agent": true,
+                "target": true,
+                "verbosity": 3,
+                "virtualizer": {
+                    "name": "qemu"
                 }
             }
         ]
