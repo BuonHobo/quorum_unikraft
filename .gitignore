@@ -9,4 +9,3 @@ __pycache__
 package-lock.json
 node_modules
 irs-blockchain
-data*

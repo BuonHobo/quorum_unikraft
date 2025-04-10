@@ -3,12 +3,11 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
-
-def main():
+def main(dir="data"):
     name_to_data = {}
-
-    for file in os.listdir("data"):
+    for file in os.listdir(dir):
         if not file.endswith(".csv"):
             continue
         name, rps, attempt = file.removesuffix(".csv").split("_")
@@ -25,7 +24,7 @@ def main():
         for datapoint in ["input", "output", "latency", "failure"]:
             if rps not in name_to_data[name][datapoint]["datapoints"]:
                 name_to_data[name][datapoint]["datapoints"][rps] = []
-        df = pd.read_csv(f"data/{file}")
+        df = pd.read_csv(f"{dir}/{file}")
         failures = df[df["recv_time"] < 0]
 
         df = df[df["recv_time"] >= 0]
@@ -67,7 +66,7 @@ def main():
     plt.xlabel("Input Throughput (req/s)")
     plt.ylabel("Output Throughput (req/s)")
     plt.legend()
-    plt.savefig("plots/throughput.png")
+    plt.savefig(f"{dir}/throughput.png")
     plt.clf()
 
     for name, data in name_to_data.items():
@@ -86,7 +85,7 @@ def main():
     plt.xlabel("Input Throughput (req/s)")
     plt.ylabel("Response Latency (s)")
     plt.legend()
-    plt.savefig("plots/latency.png")
+    plt.savefig(f"{dir}/latency.png")
     plt.clf()
 
     for name, data in name_to_data.items():
@@ -105,9 +104,9 @@ def main():
     plt.xlabel("Input Throughput (req/s)")
     plt.ylabel("Failure Rate (req/s)")
     plt.legend()
-    plt.savefig("plots/failure.png")
+    plt.savefig(f"{dir}/failure.png")
     plt.clf()
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
